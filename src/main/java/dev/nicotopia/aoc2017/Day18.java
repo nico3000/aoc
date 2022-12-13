@@ -3,98 +3,11 @@ package dev.nicotopia.aoc2017;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.function.LongConsumer;
-import java.util.function.LongSupplier;
 
 public class Day18 {
-    private enum ArgType {
-        REG, VAL,
-    }
-
-    private record Arg(ArgType type, long val) {
-        public Arg(String src) {
-            this(src.length() == 1 && 'a' <= src.charAt(0) && src.charAt(0) <= 'z' ? ArgType.REG : ArgType.VAL,
-                    src.length() == 1 && 'a' <= src.charAt(0) && src.charAt(0) <= 'z' ? src.charAt(0)
-                            : Long.valueOf(src));
-        }
-
-        public long get(Machine m) {
-            return switch (type) {
-                case VAL -> this.val;
-                case REG -> m.registers.getOrDefault((char) this.val, 0L);
-            };
-        }
-    }
-
-    private record Op(String cmd, Arg arg0, Arg arg1) {
-        public void execute(Machine m) {
-            switch (this.cmd) {
-                case "snd" -> m.snd((int) this.arg0.get(m));
-                case "set" -> m.registers.put((char) this.arg0.val, this.arg1.get(m));
-                case "add" -> m.registers.put((char) this.arg0.val, this.arg0.get(m) + this.arg1.get(m));
-                case "mul" -> m.registers.put((char) this.arg0.val, this.arg0.get(m) * this.arg1.get(m));
-                case "mod" -> m.registers.put((char) this.arg0.val, this.arg0.get(m) % this.arg1.get(m));
-                case "rcv" -> {
-                    if (this.arg0.get(m) != 0 && m.lastSndFrequency != null) {
-                        System.out.println("Part one: " + m.lastSndFrequency);
-                        m.lastSndFrequency = null;
-                    }
-                    m.registers.put((char) this.arg0.val, m.rcv());
-                }
-                case "jgz" -> {
-                    if (0 < this.arg0.get(m)) {
-                        m.jmp((int) this.arg1.get(m));
-                    }
-                }
-                default -> throw new RuntimeException();
-            }
-        }
-    }
-
-    private static class Machine {
-        private final Map<Character, Long> registers = new HashMap<>();
-        private final List<Op> program = new LinkedList<>();
-        private int ic;
-        private final LongConsumer sndConsumer;
-        private final LongSupplier rcvSupplier;
-        private Long lastSndFrequency = 0L;
-
-        public Machine(int id, List<String> assemblerLines, LongConsumer sndConsumer, LongSupplier rcvSupplier) {
-            this.program.addAll(assemblerLines.stream().map(l -> l.split("\\s+"))
-                    .map(s -> new Op(s[0], new Arg(s[1]), s.length == 2 ? null : new Arg(s[2]))).toList());
-            this.sndConsumer = sndConsumer;
-            this.rcvSupplier = rcvSupplier;
-            this.registers.put('p', (long) id);
-        }
-
-        public void execute() {
-            this.ic = 0;
-            while (this.ic < this.program.size()) {
-                this.program.get(this.ic++).execute(this);
-            }
-        }
-
-        public void snd(long value) {
-            if (this.lastSndFrequency != null) {
-                this.lastSndFrequency = value;
-            }
-            this.sndConsumer.accept(value);
-        }
-
-        public long rcv() {
-            return this.rcvSupplier.getAsLong();
-        }
-
-        public void jmp(int offset) {
-            this.ic += offset - 1;
-        }
-    }
-
     public static class InterconQueue {
         private final String name;
         private final Queue<Long> queue = new LinkedList<>();
