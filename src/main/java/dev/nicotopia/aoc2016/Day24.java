@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.BiFunction;
 
 import dev.nicotopia.GraphUtil;
@@ -60,8 +61,8 @@ public class Day24 {
                 shortestDistances[from.label - '0'][to.label - '0'] = arena[to.pos.y][to.pos.x];
             }
         }
-        System.out.println("Part one: " + GraphUtil.travelingSalesman(shortestDistances, 0, false));
-        System.out.println("Part two: " + GraphUtil.travelingSalesman(shortestDistances, 0, true));
+        System.out.println("Part one: " + GraphUtil.travelingSalesman(shortestDistances, OptionalInt.of(0)));
+        System.out.println("Part two: " + GraphUtil.travelingSalesman(shortestDistances));
     }
 
     private static void reset(int arena[][]) {
