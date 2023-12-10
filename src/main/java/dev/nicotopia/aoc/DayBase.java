@@ -1,5 +1,7 @@
 package dev.nicotopia.aoc;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,27 +10,69 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
+
 import dev.nicotopia.Util;
 
 public abstract class DayBase implements Runnable {
+    public static final Font MONOSPACED_FONT = DayBase.getMonospedFont();
+
+    private static Font getMonospedFont() {
+        return Arrays
+                .stream(new String[] { "DejaVu Sans Mono", "Inconsolata", "Consolas", "Monospaced", "Courier New", })
+                .filter(Arrays.asList(
+                        GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())::contains)
+                .findFirst().map(f -> new Font(f, Font.PLAIN, 14)).orElse(null);
+    }
+
     private record TaskResult(String name, String value, long elapsedNanos) {
     }
 
     private final List<TaskResult> taskResults = new LinkedList<>();
-    private PuzzleInputSelector puzzleInputSelector = new PuzzleInputSelector(this.getPuzzleName());
+    private PuzzleInputSelector puzzleInputSelector = this.createPuzzleInputSelector();
+    private boolean reuseLastInput = false;
     private final Timer timer = new Timer();
+    private PuzzleInput puzzleInput;
+
+    public DayBase() {
+        FlatGradiantoDeepOceanIJTheme.setup();
+    }
 
     public void registerSecondaryInputs(String... names) {
         this.puzzleInputSelector.registerSecondaryInputs(names);
     }
 
     public void addPresetFromResource(String presetName, String primaryInputResourcePath,
-            Object... secondaryInputNames) {
-        this.puzzleInputSelector.addPresetFromResource(presetName, primaryInputResourcePath, secondaryInputNames);
+            Object... secondaryInputValues) {
+        this.puzzleInputSelector.addPresetFromResource(presetName, primaryInputResourcePath, secondaryInputValues);
+    }
+
+    public void addPreset(String presetName, List<String> primaryInputLines, Object... secondaryInputValues) {
+        this.puzzleInputSelector.addPreset(presetName, primaryInputLines, secondaryInputValues);
+    }
+
+    public void addPreset(String presetName, Object primaryInput, Object... secondaryInputValues) {
+        this.puzzleInputSelector.addPreset(presetName, String.valueOf(primaryInput), secondaryInputValues);
+    }
+
+    private PuzzleInput getPuzzleInput() {
+        if (this.puzzleInput == null) {
+            this.timer.pause();
+            try {
+                this.puzzleInput = this.puzzleInputSelector.getPuzzleInput(this.reuseLastInput);
+            } catch (InterruptedException ex) {
+                System.err.println(ex.getMessage());
+            }
+            this.timer.resume();
+        }
+        if (puzzleInput == null) {
+            System.exit(0);
+        }
+        return this.puzzleInput;
     }
 
     public List<String> getPrimaryPuzzleInput() {
-        return this.puzzleInputSelector.getPuzzleInput(this.timer).getPrimaryInputLines();
+        return this.getPuzzleInput().getPrimaryInputLines();
     }
 
     public int getIntInput(String name) {
@@ -36,27 +80,41 @@ public abstract class DayBase implements Runnable {
     }
 
     public String getInput(String name) {
-        return this.puzzleInputSelector.getPuzzleInput(this.timer).getSecondaryInput(name);
+        return this.getPuzzleInput().getSecondaryInput(name);
     }
 
     public void addTask(String name, Runnable taskFn) {
         this.timer.start();
-        taskFn.run();
-        this.taskResults.add(new TaskResult(name, null, timer.stop()));
+        try {
+            taskFn.run();
+            this.taskResults.add(new TaskResult(name, null, timer.stop()));
+        } catch (AocException ex) {
+            this.taskResults.add(new TaskResult(name, ex.getMessage(), timer.stop()));
+        }
     }
 
     public <E> E addSilentTask(String name, Supplier<E> taskFn) {
         this.timer.start();
-        E result = taskFn.get();
-        this.taskResults.add(new TaskResult(name, null, timer.stop()));
-        return result;
+        try {
+            E result = taskFn.get();
+            this.taskResults.add(new TaskResult(name, null, timer.stop()));
+            return result;
+        } catch (AocException ex) {
+            this.taskResults.add(new TaskResult(name, ex.getMessage(), timer.stop()));
+            return null;
+        }
     }
 
     public <E> E addTask(String name, Supplier<E> taskFn) {
         this.timer.start();
-        E result = taskFn.get();
-        this.taskResults.add(new TaskResult(name, String.valueOf(result), timer.stop()));
-        return result;
+        try {
+            E result = taskFn.get();
+            this.taskResults.add(new TaskResult(name, String.valueOf(result), timer.stop()));
+            return result;
+        } catch (AocException ex) {
+            this.taskResults.add(new TaskResult(name, ex.getMessage(), timer.stop()));
+            return null;
+        }
     }
 
     private void showResults() {
@@ -69,30 +127,28 @@ public abstract class DayBase implements Runnable {
                     resultsBuilder.append(String.format(":%c%s", result.contains("\n") ? '\n' : ' ', result));
                 }
             }
-            ResultFrame.showResults(resultsBuilder.toString().trim(), this.puzzleInputSelector.getMonospacedFont());
+            InfoFrame.showText("Results", resultsBuilder.toString().trim(), MONOSPACED_FONT, "OK");
         }
     }
 
-    private String getPuzzleName() {
+    private PuzzleInputSelector createPuzzleInputSelector() {
         Matcher m = Pattern.compile("dev\\.nicotopia\\.aoc(\\d+)\\.Day(\\d+)").matcher(this.getClass().getName());
         if (!m.matches()) {
-            return this.getClass().getSimpleName();
+            return new PuzzleInputSelector(0, 0);
         }
-        return String.format("Advent of Code puzzle %d of year %d", Integer.valueOf(m.group(2)),
-                Integer.valueOf(m.group(1)));
+
+        return new PuzzleInputSelector(Integer.valueOf(m.group(1)), Integer.valueOf(m.group(2)));
     }
 
     public static void main(String args[])
             throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         String className = null;
-        boolean reuseLastInput = false;
         var argList = Arrays.asList(args);
         if (!argList.contains("--help") && !argList.contains("-h")) {
             int posYear = argList.indexOf("-y");
             int posDay = argList.indexOf("-d");
             int posClass = argList.indexOf("-c");
-            reuseLastInput = argList.indexOf("-r") != -1;
             try {
                 if (posClass != -1) {
                     className = args[posClass + 1];
@@ -109,10 +165,10 @@ public abstract class DayBase implements Runnable {
             return;
         }
 
-        System.out.printf("starting aoc instance from: %s\n", className);
+        System.out.printf("trying to start aoc instance from class: %s\n", className);
         if (ClassLoader.getSystemClassLoader().loadClass(className).getConstructor()
                 .newInstance() instanceof DayBase aoc) {
-            aoc.puzzleInputSelector.setForceAskForInput(!reuseLastInput);
+            aoc.reuseLastInput = argList.indexOf("-r") != -1;
             aoc.run();
             aoc.showResults();
         } else {
@@ -128,7 +184,7 @@ public abstract class DayBase implements Runnable {
                 "\t-c\t\tProvide the fully qualified java class name to load; e.g., dev.nicotopia.aoc2023.Day01.");
         System.out.println("\t-y\t\tProvide the year of the AoC event. If this is set -d must be set too.");
         System.out.println("\t-d\t\tProvide the day of the AoC event. If this is set -y must be set too.");
-        System.out.printf("\t-r\t\tIf available, don't ask for input and use data from %s.\n",
+        System.out.printf("\t-r\t\tIf available, don't ask for input and reuse data from %s.\n",
                 PuzzleInputSelector.LAST_INPUT_FILE);
     }
 }

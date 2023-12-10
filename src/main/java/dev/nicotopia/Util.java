@@ -49,6 +49,10 @@ public class Util {
         return a == 0 ? b : b == 0 ? a : gcd(Math.max(a, b) % Math.min(a, b), Math.min(a, b));
     }
 
+    public static long lcm(long a, long b) {
+        return a * b / gcd(a, b);
+    }
+
     public static <K, V> Stream<Pair<K, V>> pairStream(Map<K, V> map) {
         return map.keySet().stream().map(k -> new Pair<>(k, map.get(k)));
     }

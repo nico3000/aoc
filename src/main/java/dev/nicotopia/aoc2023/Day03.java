@@ -6,11 +6,11 @@ import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.Coordinate;
+import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.DayBase;
 
 public class Day03 extends DayBase {
-    private record PartNumber(int value, List<Coordinate> adjacentSymbolCoordinates) {
+    private record PartNumber(int value, List<Vec2i> adjacentSymbolCoordinates) {
     }
 
     private List<String> lines;
@@ -28,10 +28,10 @@ public class Day03 extends DayBase {
         Pattern p = Pattern.compile("\\d+");
         this.partNumbers = IntStream.range(0, this.lines.size())
                 .mapToObj(y -> p.matcher(this.lines.get(y)).results().map(r -> {
-                    List<Coordinate> adjacentSymbolCoordinates = new LinkedList<>();
+                    List<Vec2i> adjacentSymbolCoordinates = new LinkedList<>();
                     BiConsumer<Integer, Integer> addIfSymbol = (tx, ty) -> {
                         if (this.isSymbol(tx, ty)) {
-                            adjacentSymbolCoordinates.add(new Coordinate(tx, ty));
+                            adjacentSymbolCoordinates.add(new Vec2i(tx, ty));
                         }
                     };
                     addIfSymbol.accept(r.start() - 1, y);
@@ -49,7 +49,7 @@ public class Day03 extends DayBase {
     }
 
     private int partTwo() {
-        return Coordinate.streamFromRectangle(0, 0, this.lines.getFirst().length(), this.lines.size()).mapToInt(c -> {
+        return Vec2i.streamFromRectangle(0, 0, this.lines.getFirst().length(), this.lines.size()).mapToInt(c -> {
             var pns = this.partNumbers.stream().filter(pn -> pn.adjacentSymbolCoordinates.contains(c))
                     .toList();
             return pns.size() == 2 ? pns.get(0).value * pns.get(1).value : 0;
