@@ -1,10 +1,12 @@
 package dev.nicotopia.aoc2018;
 
 import java.util.BitSet;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.InfoFrame;
 
 public class Day12 extends DayBase {
     public class Pots {
@@ -15,16 +17,21 @@ public class Day12 extends DayBase {
             (pos < 0 ? this.negative : this.positive).set(pos < 0 ? -pos - 1 : pos, state);
         }
 
-        public int getMin() {
+        public int getFirstSetPotIdx() {
             return -this.negative.length();
         }
 
-        public int getMax() {
-            return this.positive.length() + 1;
+        public int getLastSetPotIdx() {
+            return this.positive.length() - 1;
         }
 
         public boolean get(int pos) {
             return (pos < 0 ? this.negative : this.positive).get(pos < 0 ? -pos - 1 : pos);
+        }
+
+        public String rangeToString(int startInclusive, int endExclusive) {
+            return IntStream.range(startInclusive, endExclusive).mapToObj(this::get).reduce("",
+                    (a, b) -> a + (b ? '#' : '.'), String::concat);
         }
 
         @Override
@@ -37,38 +44,76 @@ public class Day12 extends DayBase {
         }
     }
 
-    private Pots pots = new Pots();
-    private List<Integer> growingStates;
+    private Pots initialPots = new Pots();
+    private Set<Integer> growingStates;
+    private int lastTailLength = 0;
 
     private void processInput() {
         String initial = this.getPrimaryPuzzleInput().getFirst().substring("initial state: ".length());
         for (int i = 0; i < initial.length(); ++i) {
-            this.pots.set(i, initial.charAt(i) == '#');
+            this.initialPots.set(i, initial.charAt(i) == '#');
         }
         this.growingStates = this.getPrimaryPuzzleInput().stream().filter(l -> l.endsWith(" => #"))
                 .map(l -> (l.charAt(0) == '#' ? 16 : 0) + (l.charAt(1) == '#' ? 8 : 0) + (l.charAt(2) == '#' ? 4 : 0)
                         + (l.charAt(3) == '#' ? 2 : 0) + (l.charAt(4) == '#' ? 1 : 0))
-                .toList();
+                .collect(Collectors.toSet());
     }
 
-    private int simulate(long iterations) {
+    private Pots simulate(int iterations) {
+        Pots currentPots = this.initialPots;
         for (long i = 0; i < iterations; ++i) {
+            int firstChangedIdx = Integer.MAX_VALUE;
             Pots newPots = new Pots();
-            for (int j = pots.getMin() - 2; j != pots.getMax() + 2; ++j) {
-                int state = (pots.get(j - 2) ? 16 : 0) + (pots.get(j - 1) ? 8 : 0) + (pots.get(j) ? 4 : 0)
-                        + (pots.get(j + 1) ? 2 : 0) + (pots.get(j + 2) ? 1 : 0);
+            for (int j = currentPots.getFirstSetPotIdx() - 2; j != currentPots.getLastSetPotIdx() + 2; ++j) {
+                int state = (currentPots.get(j - 2) ? 16 : 0) + (currentPots.get(j - 1) ? 8 : 0)
+                        + (currentPots.get(j) ? 4 : 0) + (currentPots.get(j + 1) ? 2 : 0)
+                        + (currentPots.get(j + 2) ? 1 : 0);
+                boolean oldValue = currentPots.get(j);
+                boolean newValue = growingStates.contains(state);
+                if (firstChangedIdx == Integer.MAX_VALUE && oldValue != newValue) {
+                    firstChangedIdx = j;
+                }
                 newPots.set(j, growingStates.contains(state));
             }
-            pots = newPots;
+            currentPots = newPots;
+            // System.out.printf("%d:\t[%d,%d], changed:\t[%d,%d] (size: %d) --- ", i, currentPots.getFirstSetPotIdx(),
+            //         currentPots.getLastSetPotIdx(), firstChangedIdx, currentPots.getLastSetPotIdx(),
+            //         1 + currentPots.getLastSetPotIdx() - firstChangedIdx);
+            // System.out.print(currentPots.rangeToString(firstChangedIdx - 9, firstChangedIdx) + " ");
+            // System.out.println(currentPots.rangeToString(firstChangedIdx, currentPots.getLastSetPotIdx() + 1));
+            this.lastTailLength = 1 + currentPots.getLastSetPotIdx() - firstChangedIdx;
         }
-        return IntStream.rangeClosed(this.pots.getMin(), this.pots.getMax()).map(i -> this.pots.get(i) ? i : 0).sum();
+        return currentPots;
+    }
+
+    private int partOne() {
+        Pots pots = this.simulate(20);
+        return IntStream.rangeClosed(pots.getFirstSetPotIdx(), pots.getLastSetPotIdx()).filter(pots::get).sum();
+    }
+
+    private long partTwo() {
+        final int tailLength = this.lastTailLength;
+        final int simulatedIterations = 2000;
+        final long actualIterations = 50000000000L;
+        Pots pots = this.simulate(simulatedIterations);
+        long baseSum = IntStream.rangeClosed(pots.getFirstSetPotIdx(), pots.getLastSetPotIdx() - tailLength)
+                .filter(pots::get).sum();
+        long tailSum = IntStream.rangeClosed(pots.getLastSetPotIdx() - tailLength + 1, pots.getLastSetPotIdx())
+                .filter(pots::get).sum();
+        long numSetPotsInTail = IntStream.rangeClosed(pots.getLastSetPotIdx() - tailLength + 1, pots.getLastSetPotIdx())
+                .filter(pots::get).count();
+        return baseSum + tailSum + (actualIterations - simulatedIterations) * numSetPotsInTail;
     }
 
     @Override
     public void run() {
         this.addPresetFromResource("Example", "/2018/day12e.txt");
         this.addTask("Process input", this::processInput);
-        this.addTask("Part one", () -> this.simulate(20));
-        this.addTask("Part two", () -> this.simulate(50000000000L));
+        this.addTask("Part one", this::partOne);
+        if (InfoFrame.showText("Info",
+                "The solution of part two was adjusted to work with my own puzzle input and might\nnot work with others. Do you want to try it anyway?",
+                MONOSPACED_FONT, "Yes", "No") == 0) {
+            this.addTask("Part two", this::partTwo);
+        }
     }
 }
