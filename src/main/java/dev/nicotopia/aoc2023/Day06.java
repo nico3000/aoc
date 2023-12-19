@@ -3,6 +3,7 @@ package dev.nicotopia.aoc2023;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
@@ -31,8 +32,8 @@ public class Day06 extends DayBase {
     }
 
     private long partTwo() {
-        String time = this.games.stream().map(g -> String.valueOf(g.time())).reduce("", String::concat);
-        String distance = this.games.stream().map(g -> String.valueOf(g.distance())).reduce("", String::concat);
+        String time = this.games.stream().map(g -> String.valueOf(g.time())).collect(Collectors.joining());
+        String distance = this.games.stream().map(g -> String.valueOf(g.distance())).collect(Collectors.joining());
         return new Game(Long.valueOf(time), Long.valueOf(distance)).getNumWinningOutcomes();
     }
 

@@ -3,8 +3,14 @@ package dev.nicotopia;
 import java.util.Optional;
 
 public record Range(long start, long size) {
+    public static final Range EMPTY = new Range(0, 0);
+
     public long end() {
         return this.start + this.size;
+    }
+
+    public boolean isEmpty() {
+        return this.size == 0;
     }
 
     public boolean contains(long v) {
@@ -31,5 +37,10 @@ public record Range(long start, long size) {
 
     public boolean areDisjoint(Range other) {
         return other.end() <= this.start || this.end() <= other.start;
+    }
+
+    @Override
+    public String toString() {
+        return this.size == 0 ? "empty" : String.format("[%d,%d]", this.start, this.start + this.size - 1);
     }
 }

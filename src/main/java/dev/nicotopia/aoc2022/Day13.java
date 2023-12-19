@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Day13 {
-    public record Pair(Packet left, Packet right) {
+    public record PacketPair(Packet left, Packet right) {
         public boolean isRightOrder() {
             return this.left.compareTo(this.right) < 0;
         }
@@ -81,21 +81,21 @@ public class Day13 {
     }
 
     public static void main(String[] args) throws IOException {
-        List<Pair> pairs = new LinkedList<>();
+        List<PacketPair> pairs = new LinkedList<>();
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(Day13.class.getResourceAsStream("/2022/day13.txt")))) {
             do {
                 String firstStr = br.readLine();
                 String secondStr = br.readLine();
-                pairs.add(new Pair(new Packet(firstStr), new Packet(secondStr)));
+                pairs.add(new PacketPair(new Packet(firstStr), new Packet(secondStr)));
             } while (br.readLine() != null);
         }
         int sum = IntStream.range(1, pairs.size() + 1).filter(i -> pairs.get(i - 1).isRightOrder()).sum();
         System.out.println("Part one: " + sum);
         Packet p0 = new Packet("[[2]]");
         Packet p1 = new Packet("[[6]]");
-        pairs.add(new Pair(p0, p1));
-        List<Packet> sorted = pairs.stream().mapMulti((Pair p, Consumer<Packet> m) -> {
+        pairs.add(new PacketPair(p0, p1));
+        List<Packet> sorted = pairs.stream().mapMulti((PacketPair p, Consumer<Packet> m) -> {
             m.accept(p.left);
             m.accept(p.right);
         }).sorted().toList();

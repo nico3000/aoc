@@ -7,11 +7,14 @@ import java.util.stream.Stream;
 
 public class Util {
     public static String formatMillis(long millis) {
-        return formatNanos(millis / 1000000);
+        return formatNanos(millis * 1000000);
     }
 
     public static String formatNanos(long nanos) {
-        if (nanos < 1000000000) {
+        if (nanos == 0) {
+            return "0 ms";
+        }
+        if (nanos < 1000000000 && nanos % 1000000 != 0) {
             return String.format("%.3f ms", 1e-6f * (float) nanos);
         }
         long micros = nanos / 1000;
@@ -55,6 +58,20 @@ public class Util {
 
     public static <K, V> Stream<Pair<K, V>> pairStream(Map<K, V> map) {
         return map.keySet().stream().map(k -> new Pair<>(k, map.get(k)));
+    }
+
+    public static long binomial(int n, int k) {
+        long c = 1;
+        if (k > n - k) {
+            k = n - k;
+        }
+        for (int i = 1; i <= k; i++, n--) {
+            if (c / i > Long.MAX_VALUE / n) {
+                return 0;
+            }
+            c = c / i * n + c % i * n / i;
+        }
+        return c;
     }
 
     public static void main(String[] args) {

@@ -6,12 +6,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
 
+import dev.nicotopia.Pair;
 import dev.nicotopia.Util;
 
 public abstract class DayBase implements Runnable {
@@ -127,17 +129,22 @@ public abstract class DayBase implements Runnable {
                     resultsBuilder.append(String.format(":%c%s", result.contains("\n") ? '\n' : ' ', result));
                 }
             }
-            InfoFrame.showText("Results", resultsBuilder.toString().trim(), MONOSPACED_FONT, "OK");
+            var yd = this.getYearAndDay();
+            String title = "AoC" + (yd.isPresent() ? " " + yd.get().first() + ", Day " + yd.get().second() : "")
+                    + ": Results";
+            InfoFrame.showText(title, resultsBuilder.toString().trim(), MONOSPACED_FONT, "OK");
         }
     }
 
     private PuzzleInputSelector createPuzzleInputSelector() {
-        Matcher m = Pattern.compile("dev\\.nicotopia\\.aoc(\\d+)\\.Day(\\d+)").matcher(this.getClass().getName());
-        if (!m.matches()) {
-            return new PuzzleInputSelector(0, 0);
-        }
+        var yd = this.getYearAndDay();
+        return new PuzzleInputSelector(yd.isPresent() ? yd.get().first() : 0, yd.isPresent() ? yd.get().second() : 0);
+    }
 
-        return new PuzzleInputSelector(Integer.valueOf(m.group(1)), Integer.valueOf(m.group(2)));
+    private Optional<Pair<Integer, Integer>> getYearAndDay() {
+        Matcher m = Pattern.compile("dev\\.nicotopia\\.aoc(\\d+)\\.Day(\\d+)").matcher(this.getClass().getName());
+        return m.matches() ? Optional.of(new Pair<>(Integer.valueOf(m.group(1)), Integer.valueOf(m.group(2))))
+                : Optional.empty();
     }
 
     public static void main(String args[])

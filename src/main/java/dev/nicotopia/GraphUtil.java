@@ -205,13 +205,13 @@ public class GraphUtil {
         private final Map<Node, Integer> fScores = new HashMap<>();
         private final Map<Node, Integer> gScores = new HashMap<>();
         private final BiFunction<Node, Integer, NodeDistancePair<Node>> neightbourGetter;
-        private final Function<Node, Integer> estimater;
+        private final Function<Node, Integer> estimator;
         private final Function<Node, Boolean> isFinal;
 
         public HashedAStarInterface(BiFunction<Node, Integer, NodeDistancePair<Node>> neightbourGetter,
-                Function<Node, Integer> estimater, Function<Node, Boolean> isFinal) {
+                Function<Node, Integer> estimator, Function<Node, Boolean> isFinal) {
             this.neightbourGetter = neightbourGetter;
-            this.estimater = estimater;
+            this.estimator = estimator;
             this.isFinal = isFinal;
         }
 
@@ -249,14 +249,13 @@ public class GraphUtil {
 
         @Override
         public int estimate(Node n) {
-            return this.estimater.apply(n);
+            return this.estimator.apply(n);
         }
 
         @Override
         public boolean isFinal(Node n) {
             return this.isFinal.apply(n);
         }
-
     }
 
     /**
@@ -266,7 +265,7 @@ public class GraphUtil {
      * @param start  The start node from which the minimum distances to all
      *               other nodes will be calculated.
      */
-    public static <Node> int aStar(AStarInterface<Node> ai, Node start) {
+    public static <Node> NodeDistancePair<Node> aStar(AStarInterface<Node> ai, Node start) {
         ai.reset();
         PriorityQueue<Node> visited = new PriorityQueue<>(
                 (l, r) -> Integer.compare(ai.getFScore(l), ai.getFScore(r)));
@@ -276,7 +275,7 @@ public class GraphUtil {
         while (!visited.isEmpty()) {
             Node c = visited.poll();
             if (ai.isFinal(c)) {
-                return ai.getFScore(c);
+                return new NodeDistancePair<Node>(c, ai.getFScore(c));
             }
             int idx = 0;
             NodeDistancePair<Node> neighbour;
@@ -293,7 +292,7 @@ public class GraphUtil {
                 ++idx;
             }
         }
-        return Integer.MAX_VALUE;
+        return null;
     }
 
     /**

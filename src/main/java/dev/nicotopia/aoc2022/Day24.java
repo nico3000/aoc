@@ -84,11 +84,11 @@ public class Day24 {
         List<Set<Position>> valleyStates = new ArrayList<>();
         valleyStates.add(new HashSet<>(blizzards.stream().map(Blizzard::initialPos).toList()));
         AStarInterface<State> aiToE = createAStarInterface(blizzards, valleyWidth, valleyHeight, end, valleyStates);
-        int minA = GraphUtil.aStar(aiToE, new State(start, 0));
+        int minA = GraphUtil.aStar(aiToE, new State(start, 0)).distance();
         System.out.println("Part one: " + minA);
         AStarInterface<State> aiToS = createAStarInterface(blizzards, valleyWidth, valleyHeight, start, valleyStates);
-        int minB = GraphUtil.aStar(aiToS, new State(end, minA));
-        int minC = GraphUtil.aStar(aiToE, new State(start, minA + minB));
+        int minB = GraphUtil.aStar(aiToS, new State(end, minA)).distance();
+        int minC = GraphUtil.aStar(aiToE, new State(start, minA + minB)).distance();
         System.out.println("Part two: " + (minA + minB + minC));
     }
 }

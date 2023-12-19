@@ -29,17 +29,12 @@ public class Day12 extends DayBase {
             return (pos < 0 ? this.negative : this.positive).get(pos < 0 ? -pos - 1 : pos);
         }
 
-        public String rangeToString(int startInclusive, int endExclusive) {
-            return IntStream.range(startInclusive, endExclusive).mapToObj(this::get).reduce("",
-                    (a, b) -> a + (b ? '#' : '.'), String::concat);
-        }
-
         @Override
         public String toString() {
             String left = IntStream.range(0, this.negative.length()).mapToObj(i -> this.negative.get(i) ? "#" : ".")
-                    .reduce("", (a, b) -> b + a);
+                    .collect(Collectors.joining());
             String right = IntStream.range(0, this.positive.length()).mapToObj(i -> this.positive.get(i) ? "#" : ".")
-                    .reduce("", String::concat);
+                    .collect(Collectors.joining());
             return left + right;
         }
     }
@@ -76,11 +71,6 @@ public class Day12 extends DayBase {
                 newPots.set(j, growingStates.contains(state));
             }
             currentPots = newPots;
-            // System.out.printf("%d:\t[%d,%d], changed:\t[%d,%d] (size: %d) --- ", i, currentPots.getFirstSetPotIdx(),
-            //         currentPots.getLastSetPotIdx(), firstChangedIdx, currentPots.getLastSetPotIdx(),
-            //         1 + currentPots.getLastSetPotIdx() - firstChangedIdx);
-            // System.out.print(currentPots.rangeToString(firstChangedIdx - 9, firstChangedIdx) + " ");
-            // System.out.println(currentPots.rangeToString(firstChangedIdx, currentPots.getLastSetPotIdx() + 1));
             this.lastTailLength = 1 + currentPots.getLastSetPotIdx() - firstChangedIdx;
         }
         return currentPots;

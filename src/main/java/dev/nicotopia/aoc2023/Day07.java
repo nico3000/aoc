@@ -2,6 +2,7 @@ package dev.nicotopia.aoc2023;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.aoc.DayBase;
@@ -25,7 +26,7 @@ public class Day07 extends DayBase {
     }
 
     private static Hand createHand(RuleType ruleType, String hand, int bid) {
-        String t = hand.chars().sorted().mapToObj(c -> String.valueOf((char) c)).reduce("", String::concat)
+        String t = hand.chars().sorted().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.joining())
                 .replaceAll("(.)\\1\\1\\1\\1", "{5}").replaceAll("(.)\\1\\1\\1", "{4}").replaceAll("(.)\\1\\1", "{3}")
                 .replaceAll("(.)\\1", "{2}");
         int numJokers = switch (ruleType) {

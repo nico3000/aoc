@@ -94,7 +94,20 @@ public class RangeSet {
             }
         }
         this.ranges.clear();
-        this.ranges.addAll(newRanges);
+        this.ranges.addAll(newRanges.stream().filter(r -> r.size() != 0).toList());
         return cutOut;
+    }
+
+    public boolean isEmpty() {
+        return this.ranges.isEmpty() || this.ranges.stream().allMatch(r -> r.size() == 0);
+    }
+
+    public long count() {
+        return this.ranges.stream().mapToLong(Range::size).sum();
+    }
+
+    @Override
+    public RangeSet clone() {
+        return new RangeSet(this.ranges);
     }
 }

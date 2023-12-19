@@ -41,4 +41,9 @@ public record Vec2i(int x, int y) {
     public int manhattanDistanceTo(Vec2i to) {
         return Math.abs(to.x - this.x) + Math.abs(to.y - this.y);
     }
+
+    @Override
+    public String toString() {
+        return this.x + "," + this.y;
+    }
 }
