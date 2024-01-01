@@ -6,9 +6,9 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day10 extends DayBase {
     private enum Classification {

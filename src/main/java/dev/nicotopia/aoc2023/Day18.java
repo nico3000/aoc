@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.Compass;
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day18 extends DayBase {
     private record Edge(int x, int y, Compass dir, int length) {

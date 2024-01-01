@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import dev.nicotopia.Compass;
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day16 extends DayBase {
     private record LaserTile(int x, int y, Compass d) {

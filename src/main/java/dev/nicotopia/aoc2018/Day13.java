@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day13 extends DayBase {
     private enum Compass {

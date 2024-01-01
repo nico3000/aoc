@@ -74,6 +74,22 @@ public class Util {
         return c;
     }
 
+    public static int max(int a, int... rem) {
+        int m = a;
+        for (int v : rem) {
+            m = Math.max(m, v);
+        }
+        return m;
+    }
+
+    public static int min(int a, int... rem) {
+        int m = a;
+        for (int v : rem) {
+            m = Math.max(m, v);
+        }
+        return m;
+    }
+
     public static void main(String[] args) {
         System.out.println(gcd(17 * 2 * 5 * 13, 17 * 2 * 7 * 11));
     }

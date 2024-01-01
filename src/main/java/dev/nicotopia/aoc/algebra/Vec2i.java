@@ -1,9 +1,11 @@
-package dev.nicotopia;
+package dev.nicotopia.aoc.algebra;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import dev.nicotopia.Pair;
 
 public record Vec2i(int x, int y) {
     public static Stream<Vec2i> streamFromRectangle(int beginX, int beginY, int endX, int endY) {
@@ -30,8 +32,12 @@ public record Vec2i(int x, int y) {
         return new Vec2i(this.x + other.x, this.y + other.y);
     }
 
-    public Vec2i mul(int f) {
-        return new Vec2i(this.x * f, this.y * f);
+    public Vec2i mul(int v) {
+        return new Vec2i(this.x * v, this.y * v);
+    }
+
+    public Vec2d mul(double v) {
+        return new Vec2d((double) this.x * v, (double) this.y * v);
     }
 
     public Vec2i mad(int f, Vec2i v) {

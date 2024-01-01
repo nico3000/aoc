@@ -6,8 +6,8 @@ import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day03 extends DayBase {
     private record PartNumber(int value, List<Vec2i> adjacentSymbolCoordinates) {

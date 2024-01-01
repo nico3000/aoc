@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.Pair;
-import dev.nicotopia.Vec2i64;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i64;
 
 public class Day11 extends DayBase {
     private List<Vec2i64> galaxies;
@@ -55,7 +55,7 @@ public class Day11 extends DayBase {
 
     @Override
     public void run() {
-        this.registerSecondaryInputs("expansionFactor");
+        this.pushSecondaryInput("expansionFactor", 1000000);
         this.addPresetFromResource("Example", "/2023/day11e.txt", 10);
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", () -> this.sumOfShortestDistances(2));

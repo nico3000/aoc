@@ -1,15 +1,15 @@
 package dev.nicotopia.aoc2023;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import dev.nicotopia.Compass;
-import dev.nicotopia.GraphUtil;
-import dev.nicotopia.GraphUtil.HashedAStarInterface;
-import dev.nicotopia.GraphUtil.NodeDistancePair;
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
+import dev.nicotopia.aoc.graphlib.AStar;
+import dev.nicotopia.aoc.graphlib.BasicGraph;
+import dev.nicotopia.aoc.graphlib.HashedAStarDataStructure;
+import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day17 extends DayBase {
     private record Node(Vec2i pos, Compass lastDir, int lastDirCount) {
@@ -96,11 +96,9 @@ public class Day17 extends DayBase {
         return node.pos.manhattanDistanceTo(new Vec2i(this.map[this.map.length - 1].length - 1, this.map.length - 1));
     }
 
-    private int execute(BiFunction<Node, Integer, NodeDistancePair<Node>> neighbourGetter,
-            Function<Node, Boolean> isFinal) {
-        NodeDistancePair<Node> result = GraphUtil.aStar(
-                new HashedAStarInterface<Node>(neighbourGetter, this::estimate, isFinal),
-                new Node(new Vec2i(0, 0), null, 0));
+    private int execute(BasicGraph<Node> graph, Function<Node, Boolean> isFinal) {
+        NodeDistancePair<Node> result = AStar.run(graph, new Node(new Vec2i(0, 0), null, 0),
+                new HashedAStarDataStructure<Node>(this::estimate, isFinal));
         return result == null ? 0 : result.distance();
     }
 

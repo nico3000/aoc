@@ -14,9 +14,10 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.nicotopia.GraphUtil;
-import dev.nicotopia.GraphUtil.HashedDijkstraInterface;
-import dev.nicotopia.GraphUtil.NodeDistancePair;
+import dev.nicotopia.aoc.graphlib.BasicGraph;
+import dev.nicotopia.aoc.graphlib.Dijkstra;
+import dev.nicotopia.aoc.graphlib.HashedDijkstraDataStructure;
+import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day16 {
     public static class Valve {
@@ -74,13 +75,14 @@ public class Day16 {
         valveConnections.keySet().forEach(v -> zeroFlowRateValves.forEach(v::removeConnectedValveGently));
         List<Valve> valves = new LinkedList<>(
                 valveConnections.keySet().stream().filter(v -> !zeroFlowRateValves.contains(v)).toList());
-        HashedDijkstraInterface<Valve> di = new HashedDijkstraInterface<>((v, i) -> i < v.connectedValves.size()
+        HashedDijkstraDataStructure<Valve> dds = new HashedDijkstraDataStructure<>();
+        BasicGraph<Valve> graph = (v, i) -> i < v.connectedValves.size()
                 ? new NodeDistancePair<>(v.connectedValves.get(i), v.connectedValvesDistances.get(i))
-                : null);
+                : null;
         Map<Valve, Map<Valve, Integer>> shortestPaths = new HashMap<>();
         for (Valve v : valves) {
-            GraphUtil.dijkstra(di, v);
-            shortestPaths.put(v, new HashMap<>(di.getDistanceMap()));
+            Dijkstra.run(graph, v, dds);
+            shortestPaths.put(v, new HashMap<>(dds.getDistanceMap()));
         }
         Valve start = valveConnections.keySet().stream().filter(v -> v.name.equals("AA")).findAny().get();
         long now = System.currentTimeMillis();

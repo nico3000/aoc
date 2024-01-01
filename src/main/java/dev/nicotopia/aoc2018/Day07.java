@@ -78,7 +78,8 @@ public class Day07 extends DayBase {
 
     @Override
     public void run() {
-        this.registerSecondaryInputs("numWorkers", "minSeconds");
+        this.pushSecondaryInput("numWorkers", 5);
+        this.pushSecondaryInput("minSeconds", 60);
         this.addPresetFromResource("Example", "/2018/day07e.txt", 2, 0);
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);

@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import dev.nicotopia.GraphUtil;
-import dev.nicotopia.GraphUtil.HashedDijkstraInterface;
-import dev.nicotopia.GraphUtil.NodeDistancePair;
+import dev.nicotopia.aoc.graphlib.BasicGraph;
+import dev.nicotopia.aoc.graphlib.Dijkstra;
+import dev.nicotopia.aoc.graphlib.HashedDijkstraDataStructure;
+import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day12 {
     public record Position(int x, int y) {
@@ -32,7 +33,8 @@ public class Day12 {
                 }
             }
         }
-        HashedDijkstraInterface<Position> disjkstraInterface = new HashedDijkstraInterface<Day12.Position>((p, i) -> {
+        HashedDijkstraDataStructure<Position> dds = new HashedDijkstraDataStructure<Day12.Position>();
+        BasicGraph<Position> graph = (p, i) -> {
             int c = 0;
             if (p.x != 0 && terrain[p.y][p.x - 1] - 1 <= terrain[p.y][p.x] && c++ == i) {
                 return new NodeDistancePair<>(new Position(p.x - 1, p.y), 1);
@@ -44,15 +46,15 @@ public class Day12 {
                 return new NodeDistancePair<>(new Position(p.x, p.y + 1), 1);
             }
             return null;
-        });
+        };
         long min = Long.MAX_VALUE;
         for (int y = 0; y < terrain.length; ++y) {
             for (int x = 0; x < terrain[y].length; ++x) {
                 if (terrain[y][x] == 0) {
-                    GraphUtil.dijkstra(disjkstraInterface, new Position(x, y));
-                    min = Math.min(min, disjkstraInterface.getDistanceMap().getOrDefault(end, Integer.MAX_VALUE));
+                    Dijkstra.run(graph, new Position(x, y), dds);
+                    min = Math.min(min, dds.getDistanceMap().getOrDefault(end, Integer.MAX_VALUE));
                     if (x == start.x && y == start.y) {
-                        System.out.println("Part one: " + disjkstraInterface.getDistance(end));
+                        System.out.println("Part one: " + dds.getDistance(end));
                     }
                 }
             }

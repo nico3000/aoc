@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.BiFunction;
 
-import dev.nicotopia.GraphUtil;
-import dev.nicotopia.GraphUtil.NodeDistancePair;
+import dev.nicotopia.aoc.graphlib.Dijkstra;
+import dev.nicotopia.aoc.graphlib.NodeDistancePair;
+import dev.nicotopia.aoc.graphlib.TravelingSalesman;
 
 public class Day24 {
     private record Position(int x, int y) {
@@ -55,14 +56,15 @@ public class Day24 {
             return p == null ? null : new NodeDistancePair<>(p, 1);
         };
         for (LabeledPosition from : toVisit) {
-            GraphUtil.dijkstra(p -> arena[p.y][p.x], (p, d) -> arena[p.y][p.x] = d, () -> reset(arena), neighbourGetter,
+            Dijkstra.run(p -> arena[p.y][p.x], (p, d) -> arena[p.y][p.x] = d, () -> reset(arena),
+                    neighbourGetter,
                     from.pos);
             for (LabeledPosition to : toVisit) {
                 shortestDistances[from.label - '0'][to.label - '0'] = arena[to.pos.y][to.pos.x];
             }
         }
-        System.out.println("Part one: " + GraphUtil.travelingSalesman(shortestDistances, OptionalInt.of(0)));
-        System.out.println("Part two: " + GraphUtil.travelingSalesman(shortestDistances));
+        System.out.println("Part one: " + TravelingSalesman.run(shortestDistances, OptionalInt.of(0)));
+        System.out.println("Part two: " + TravelingSalesman.run(shortestDistances));
     }
 
     private static void reset(int arena[][]) {

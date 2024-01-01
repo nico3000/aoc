@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -36,27 +37,32 @@ import javax.swing.JTextField;
 public class PuzzleInputSelector {
     public static final String LAST_INPUT_FILE = "last_input.json";
 
+    public record SecondaryInput(String name, Object defaultValue) {
+    }
+
     private final int year;
     private final int day;
     private final Map<String, PuzzleInput> puzzleInputPresets = new LinkedHashMap<>();
-    private List<String> secondaryInputNames = new LinkedList<>();
+    private List<SecondaryInput> secondaryInputs = new LinkedList<>();
     private PuzzleInput puzzleInput = new PuzzleInput();
+    private final JTextArea inputTextArea = new JTextArea();
+    private final List<JTextField> secondaryInputTextFields = new ArrayList<>();
 
     public PuzzleInputSelector(int year, int day) {
         this.year = year;
         this.day = day;
+        this.inputTextArea.setFont(DayBase.MONOSPACED_FONT);
     }
 
-    public void registerSecondaryInputs(String... names) {
-        this.secondaryInputNames.clear();
-        this.secondaryInputNames.addAll(Arrays.asList(names));
+    public void pushSecondaryInputs(SecondaryInput... inputs) {
+        this.secondaryInputs.addAll(Arrays.asList(inputs));
     }
 
     public void addPreset(String presetName, List<String> primaryInputLines, Object... secondaryInputValues) {
         PuzzleInput preset = this.puzzleInput.copyEmpty();
         preset.setPrimaryInput(primaryInputLines);
-        for (int i = 0; i < this.secondaryInputNames.size(); ++i) {
-            preset.setSecondaryInput(this.secondaryInputNames.get(i), secondaryInputValues[i].toString());
+        for (int i = 0; i < this.secondaryInputs.size(); ++i) {
+            preset.setSecondaryInput(this.secondaryInputs.get(i).name, secondaryInputValues[i].toString());
         }
         this.puzzleInputPresets.put(presetName, preset);
     }
@@ -67,10 +73,10 @@ public class PuzzleInputSelector {
 
     public void addPresetFromResource(String presetName, String primaryInputResourcePath,
             Object secondaryInputValues[]) {
-        if (this.secondaryInputNames.size() != secondaryInputValues.length) {
+        if (this.secondaryInputs.size() != secondaryInputValues.length) {
             throw new RuntimeException(String.format(
                     "Number of registered secondary inputs (%d) does not match number of given secondary inputs (%d) for preset %s.\n",
-                    this.secondaryInputNames.size(), secondaryInputValues.length, presetName));
+                    this.secondaryInputs.size(), secondaryInputValues.length, presetName));
         }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 PuzzleInputSelector.class.getResourceAsStream(primaryInputResourcePath)))) {
@@ -83,7 +89,7 @@ public class PuzzleInputSelector {
     public PuzzleInput getPuzzleInput(boolean reuseLastInput) throws InterruptedException {
         PuzzleInput lastInput = PuzzleInput.fromJsonFile(LAST_INPUT_FILE);
         if (lastInput != null
-                && this.secondaryInputNames.stream().allMatch(n -> lastInput.getSecondaryInput(n) != null)) {
+                && this.secondaryInputs.stream().allMatch(si -> lastInput.getSecondaryInput(si.name) != null)) {
             this.puzzleInput.copyFrom(lastInput);
             if (reuseLastInput) {
                 return this.puzzleInput;
@@ -93,10 +99,8 @@ public class PuzzleInputSelector {
 
         FramePresenter presenter = new FramePresenter(String.format("Advent of Code %d | Day %d", this.year, this.day));
 
-        JTextArea inputTextArea = new JTextArea(this.puzzleInput.getPlainPrimaryInput());
-        inputTextArea.setFont(DayBase.MONOSPACED_FONT);
-
-        JScrollPane inputScrollPane = new JScrollPane(inputTextArea);
+        this.inputTextArea.setText(this.puzzleInput.getPlainPrimaryInput());
+        JScrollPane inputScrollPane = new JScrollPane(this.inputTextArea);
         inputScrollPane.setPreferredSize(new Dimension(600, 600));
         inputScrollPane.setBorder(BorderFactory.createTitledBorder("Main puzzle input"));
 
@@ -109,7 +113,12 @@ public class PuzzleInputSelector {
                 Builder builder = HttpRequest.newBuilder(uri).GET().header("Cookie", "session=" + session);
                 try {
                     var response = HttpClient.newHttpClient().send(builder.build(), BodyHandlers.ofString());
-                    inputTextArea.setText(response.body());
+                    PuzzleInput p = new PuzzleInput();
+                    p.setPrimaryInput(response.body());
+                    for (SecondaryInput si : this.secondaryInputs) {
+                        p.setSecondaryInput(si.name, si.defaultValue == null ? "" : si.defaultValue.toString());
+                    }
+                    this.apply(p);
                     Preferences.userNodeForPackage(this.getClass()).put("session", session);
                 } catch (IOException | InterruptedException ex) {
                     JOptionPane.showMessageDialog(
@@ -123,14 +132,12 @@ public class PuzzleInputSelector {
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fromFileButton.addActionListener(evt -> {
             if (jfc.showOpenDialog(presenter.getFrame()) == JFileChooser.APPROVE_OPTION) {
-                inputTextArea.setText(this.getFileContents(jfc.getSelectedFile()));
+                this.inputTextArea.setText(this.getFileContents(jfc.getSelectedFile()));
             }
         });
 
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-
-        List<JTextField> secondaryInputTextFields = new LinkedList<>();
 
         JPanel presetButtonPanel = new JPanel();
         presetButtonPanel.setLayout(new BoxLayout(presetButtonPanel, BoxLayout.Y_AXIS));
@@ -139,35 +146,26 @@ public class PuzzleInputSelector {
         presetButtonPanel.add(fromFileButton);
         for (String presetName : this.puzzleInputPresets.keySet()) {
             JButton btn = new JButton(String.format(presetName));
-            btn.addActionListener(evt -> {
-                PuzzleInput preset = this.puzzleInputPresets.get(presetName);
-                inputTextArea.setText(preset.getPlainPrimaryInput());
-                for (int i = 0; i < this.secondaryInputNames.size(); ++i) {
-                    String secInputName = this.secondaryInputNames.get(i);
-                    String secInputValue = preset.getSecondaryInput(secInputName);
-                    secondaryInputTextFields.get(i).setText(secInputValue);
-                    this.puzzleInput.setSecondaryInput(secInputName, secInputValue);
-                }
-            });
+            btn.addActionListener(evt -> this.apply(this.puzzleInputPresets.get(presetName)));
             presetButtonPanel.add(btn);
         }
         JPanel presetButtonPanelPanel = new JPanel(); // don't ask
         presetButtonPanelPanel.add(presetButtonPanel);
         leftPanel.add(presetButtonPanelPanel);
 
-        if (!this.secondaryInputNames.isEmpty()) {
-            JPanel additionalInputPanel = new JPanel(new GridLayout(this.secondaryInputNames.size(), 2));
-            for (String secInName : this.secondaryInputNames) {
-                JTextField inputTextField = new JTextField(this.puzzleInput.getSecondaryInput(secInName));
+        if (!this.secondaryInputs.isEmpty()) {
+            JPanel additionalInputPanel = new JPanel(new GridLayout(this.secondaryInputs.size(), 2));
+            for (SecondaryInput si : this.secondaryInputs) {
+                JTextField inputTextField = new JTextField(this.puzzleInput.getSecondaryInput(si.name));
                 inputTextField.addFocusListener(new FocusAdapter() {
                     @Override
                     public void focusLost(FocusEvent evt) {
-                        PuzzleInputSelector.this.puzzleInput.setSecondaryInput(secInName, inputTextField.getText());
+                        PuzzleInputSelector.this.puzzleInput.setSecondaryInput(si.name, inputTextField.getText());
                     }
                 });
-                additionalInputPanel.add(new JLabel(secInName));
+                additionalInputPanel.add(new JLabel(si.name));
                 additionalInputPanel.add(inputTextField);
-                secondaryInputTextFields.add(inputTextField);
+                this.secondaryInputTextFields.add(inputTextField);
             }
             leftPanel.add(additionalInputPanel);
         }
@@ -183,9 +181,19 @@ public class PuzzleInputSelector {
         if (presenter.show(1) != 1) {
             return null;
         }
-        this.puzzleInput.setPrimaryInput(inputTextArea.getText());
+        this.puzzleInput.setPrimaryInput(this.inputTextArea.getText());
         this.puzzleInput.saveToJsonFile(LAST_INPUT_FILE);
         return this.puzzleInput;
+    }
+
+    private void apply(PuzzleInput p) {
+        this.inputTextArea.setText(p.getPlainPrimaryInput());
+        for (int i = 0; i < this.secondaryInputs.size(); ++i) {
+            String secInputName = this.secondaryInputs.get(i).name;
+            String secInputValue = p.getSecondaryInput(secInputName);
+            this.secondaryInputTextFields.get(i).setText(secInputValue);
+            this.puzzleInput.setSecondaryInput(secInputName, secInputValue);
+        }
     }
 
     private String getFileContents(File file) {

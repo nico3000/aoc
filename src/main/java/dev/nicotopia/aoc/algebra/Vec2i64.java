@@ -1,9 +1,11 @@
-package dev.nicotopia;
+package dev.nicotopia.aoc.algebra;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import dev.nicotopia.Pair;
 
 public record Vec2i64(long x, long y) {
     public static Stream<Vec2i64> streamFromRectangle(long beginX, long beginY, long endX, long endY) {

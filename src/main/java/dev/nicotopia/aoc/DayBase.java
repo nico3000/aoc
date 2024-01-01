@@ -15,8 +15,13 @@ import com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme;
 
 import dev.nicotopia.Pair;
 import dev.nicotopia.Util;
+import dev.nicotopia.aoc.PuzzleInputSelector.SecondaryInput;
 
 public abstract class DayBase implements Runnable {
+    static {
+        FlatGradiantoDeepOceanIJTheme.setup();
+    }
+
     public static final Font MONOSPACED_FONT = DayBase.getMonospedFont();
 
     private static Font getMonospedFont() {
@@ -37,11 +42,14 @@ public abstract class DayBase implements Runnable {
     private PuzzleInput puzzleInput;
 
     public DayBase() {
-        FlatGradiantoDeepOceanIJTheme.setup();
     }
 
-    public void registerSecondaryInputs(String... names) {
-        this.puzzleInputSelector.registerSecondaryInputs(names);
+    public void pushSecondaryInputs(SecondaryInput... secondaryInputs) {
+        this.puzzleInputSelector.pushSecondaryInputs(secondaryInputs);
+    }
+
+    public void pushSecondaryInput(String name, Object defaultValue) {
+        this.puzzleInputSelector.pushSecondaryInputs(new SecondaryInput(name, defaultValue));
     }
 
     public void addPresetFromResource(String presetName, String primaryInputResourcePath,
@@ -79,6 +87,14 @@ public abstract class DayBase implements Runnable {
 
     public int getIntInput(String name) {
         return Integer.valueOf(this.getInput(name));
+    }
+
+    public long getLongInput(String name) {
+        return Long.valueOf(this.getInput(name));
+    }
+
+    public double getDoubleInput(String name) {
+        return Double.valueOf(this.getInput(name));
     }
 
     public String getInput(String name) {

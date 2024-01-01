@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.GraphUtil;
-import dev.nicotopia.GraphUtil.AStarInterface;
-import dev.nicotopia.GraphUtil.HashedAStarInterface;
-import dev.nicotopia.GraphUtil.NodeDistancePair;
+import dev.nicotopia.aoc.graphlib.AStar;
+import dev.nicotopia.aoc.graphlib.AStarDataStructure;
+import dev.nicotopia.aoc.graphlib.BasicGraph;
+import dev.nicotopia.aoc.graphlib.HashedAStarDataStructure;
+import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day24 {
     private record Position(int x, int y) {
@@ -37,9 +38,15 @@ public class Day24 {
     private record State(Position p, int t) {
     }
 
-    private static AStarInterface<State> createAStarInterface(List<Blizzard> blizzards, int valleyWidth,
+    private static AStarDataStructure<State> createAStarDS(List<Blizzard> blizzards, int valleyWidth,
             int valleyHeight, Position end, List<Set<Position>> valleyStates) {
-        return new HashedAStarInterface<>((s, i) -> {
+        return new HashedAStarDataStructure<>(s -> Math.abs(end.x - s.p.x) + Math.abs(end.y - s.p.y),
+                s -> s.p.equals(end));
+    }
+
+    private static BasicGraph<State> createGraph(List<Blizzard> blizzards, int valleyWidth, int valleyHeight,
+            Position end, List<Set<Position>> valleyStates) {
+        return (s, i) -> {
             if (valleyStates.size() == s.t + 1) {
                 valleyStates.add(new HashSet<>(
                         blizzards.stream().map(b -> b.getPosition(s.t + 1, valleyWidth, valleyHeight)).toList()));
@@ -56,7 +63,7 @@ public class Day24 {
                 }
             }
             return null;
-        }, s -> Math.abs(end.x - s.p.x) + Math.abs(end.y - s.p.y), s -> s.p.equals(end));
+        };
     }
 
     public static void main(String[] args) throws IOException {
@@ -83,12 +90,16 @@ public class Day24 {
         }
         List<Set<Position>> valleyStates = new ArrayList<>();
         valleyStates.add(new HashSet<>(blizzards.stream().map(Blizzard::initialPos).toList()));
-        AStarInterface<State> aiToE = createAStarInterface(blizzards, valleyWidth, valleyHeight, end, valleyStates);
-        int minA = GraphUtil.aStar(aiToE, new State(start, 0)).distance();
+
+        AStarDataStructure<State> asdsToE = createAStarDS(blizzards, valleyWidth, valleyHeight, end, valleyStates);
+        BasicGraph<State> graphToE = createGraph(blizzards, valleyWidth, valleyHeight, end, valleyStates);
+        int minA = AStar.run(graphToE, new State(start, 0), asdsToE).distance();
         System.out.println("Part one: " + minA);
-        AStarInterface<State> aiToS = createAStarInterface(blizzards, valleyWidth, valleyHeight, start, valleyStates);
-        int minB = GraphUtil.aStar(aiToS, new State(end, minA)).distance();
-        int minC = GraphUtil.aStar(aiToE, new State(start, minA + minB)).distance();
+
+        AStarDataStructure<State> asdsToS = createAStarDS(blizzards, valleyWidth, valleyHeight, start, valleyStates);
+        BasicGraph<State> graphToS = createGraph(blizzards, valleyWidth, valleyHeight, start, valleyStates);
+        int minB = AStar.run(graphToS, new State(end, minA), asdsToS).distance();
+        int minC = AStar.run(graphToE, new State(start, minA + minB), asdsToE).distance();
         System.out.println("Part two: " + (minA + minB + minC));
     }
 }

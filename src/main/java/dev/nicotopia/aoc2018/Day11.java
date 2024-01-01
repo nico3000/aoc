@@ -1,7 +1,7 @@
 package dev.nicotopia.aoc2018;
 
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day11 extends DayBase {
     private static final int GRID_SIZE = 300;

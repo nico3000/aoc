@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import dev.nicotopia.Pair;
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.InfoFrame;
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day10 extends DayBase {
     private record Star(Vec2i pos, Vec2i velocity) {

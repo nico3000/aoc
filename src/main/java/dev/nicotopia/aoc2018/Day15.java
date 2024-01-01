@@ -8,13 +8,13 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import dev.nicotopia.GraphUtil;
-import dev.nicotopia.GraphUtil.HashedAStarInterface;
-import dev.nicotopia.GraphUtil.NodeDistancePair;
 import dev.nicotopia.Pair;
-import dev.nicotopia.Vec2i;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
+import dev.nicotopia.aoc.algebra.Vec2i;
+import dev.nicotopia.aoc.graphlib.AStar;
+import dev.nicotopia.aoc.graphlib.HashedAStarDataStructure;
+import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day15 extends DayBase {
     private enum Type {
@@ -61,10 +61,10 @@ public class Day15 extends DayBase {
     private int elfAttackPower = 3;
 
     private NodeDistancePair<Vec2i> shortestDistance(Vec2i from, Vec2i to) {
-        return GraphUtil.aStar(new HashedAStarInterface<Vec2i>((p, i) -> {
+        return AStar.run((p, i) -> {
             Vec2i n = this.getNeighbour(p, i, t -> t == Type.FLOOR);
             return n == null ? null : new NodeDistancePair<Vec2i>(n, 1);
-        }, to::manhattanDistanceTo, to::equals), from);
+        }, from, new HashedAStarDataStructure<Vec2i>(to::manhattanDistanceTo, to::equals));
     }
 
     private Vec2i getNeighbour(Vec2i p, int i, Predicate<Type> accept) {
