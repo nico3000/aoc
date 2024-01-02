@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.aoc.DayBase;
-import dev.nicotopia.aoc.InfoFrame;
+import dev.nicotopia.aoc.Dialog;
 
 public class Day12 extends DayBase {
     public class Pots {
@@ -100,9 +100,8 @@ public class Day12 extends DayBase {
         this.addPresetFromResource("Example", "/2018/day12e.txt");
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
-        if (InfoFrame.showText("Info",
-                "The solution of part two was adjusted to work with my own puzzle input and might\nnot work with others. Do you want to try it anyway?",
-                MONOSPACED_FONT, "Yes", "No") == 0) {
+        if (Dialog.showYesNoQuestion("Info",
+                "The solution of part two was adjusted to work with my own puzzle input and might\nnot work with others. Do you want to try it anyway?")) {
             this.addTask("Part two", this::partTwo);
         }
     }

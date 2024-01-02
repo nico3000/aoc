@@ -4,8 +4,10 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -23,6 +25,7 @@ public abstract class DayBase implements Runnable {
     }
 
     public static final Font MONOSPACED_FONT = DayBase.getMonospedFont();
+    public static final Font DEFAULT_FONT = DayBase.getDefaultFont();
 
     private static Font getMonospedFont() {
         return Arrays
@@ -32,10 +35,19 @@ public abstract class DayBase implements Runnable {
                 .findFirst().map(f -> new Font(f, Font.PLAIN, 14)).orElse(null);
     }
 
+    private static Font getDefaultFont() {
+        return Arrays.stream(new String[] { "DejaVu Sans", "Calibri", "Arial", })
+                .filter(Arrays.asList(
+                        GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())::contains)
+                .findFirst().map(f -> new Font(f, Font.PLAIN, 14)).orElse(null);
+    }
+
     private record TaskResult(String name, String value, long elapsedNanos) {
     }
 
     private final List<TaskResult> taskResults = new LinkedList<>();
+    private Runnable postResultsTask = null;
+    private final Map<String, Runnable> postResultsOptions = new HashMap<>();
     private PuzzleInputSelector puzzleInputSelector = this.createPuzzleInputSelector();
     private boolean reuseLastInput = false;
     private final Timer timer = new Timer();
@@ -135,6 +147,14 @@ public abstract class DayBase implements Runnable {
         }
     }
 
+    public void setPostResultsTask(Runnable task) {
+        this.postResultsTask = task;
+    }
+
+    public void pushPostResultsOption(String buttonText, Runnable action) {
+        this.postResultsOptions.put(buttonText, action);
+    }
+
     private void showResults() {
         if (!this.taskResults.isEmpty()) {
             StringBuilder resultsBuilder = new StringBuilder();
@@ -148,7 +168,13 @@ public abstract class DayBase implements Runnable {
             var yd = this.getYearAndDay();
             String title = "AoC" + (yd.isPresent() ? " " + yd.get().first() + ", Day " + yd.get().second() : "")
                     + ": Results";
-            InfoFrame.showText(title, resultsBuilder.toString().trim(), MONOSPACED_FONT, "OK");
+            Dialog resultsDialog = Dialog.createInfoDialog(title, resultsBuilder.toString().trim(), MONOSPACED_FONT);
+            this.postResultsOptions.forEach(resultsDialog::pushButton);
+            resultsDialog.pushTerminalButton("OK");
+            resultsDialog.show();
+        }
+        if (this.postResultsTask != null) {
+            this.postResultsTask.run();
         }
     }
 

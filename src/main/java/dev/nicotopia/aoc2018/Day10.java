@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import dev.nicotopia.Pair;
 import dev.nicotopia.aoc.DayBase;
-import dev.nicotopia.aoc.InfoFrame;
+import dev.nicotopia.aoc.Dialog;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day10 extends DayBase {
@@ -73,7 +73,7 @@ public class Day10 extends DayBase {
         boolean done = false;
         for (; !done; ++timePoint) {
             String text = String.format("After %d second(s):\n%s", timePoint, this.renderSky(timePoint));
-            done = InfoFrame.showText("The beautiful sky <3", text, MONOSPACED_FONT, "Stop", "Next") != 1;
+            done = Dialog.showInfo("The beautiful sky <3", text, MONOSPACED_FONT, "Stop", "Next") != 1;
         }
     }
 }

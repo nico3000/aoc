@@ -176,8 +176,8 @@ public class PuzzleInputSelector {
         presenter.getContentPanel().setLayout(new BorderLayout());
         presenter.getContentPanel().add(leftPanelPanel, BorderLayout.WEST);
         presenter.getContentPanel().add(inputScrollPane, BorderLayout.CENTER);
-        presenter.pushButton("Cancel");
-        presenter.pushButton("Run");
+        presenter.pushTerminalButton("Cancel");
+        presenter.pushTerminalButton("Run");
         if (presenter.show(1) != 1) {
             return null;
         }

@@ -2,11 +2,9 @@ package dev.nicotopia.aoc;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.OptionalInt;
-import java.util.function.Consumer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -42,21 +40,18 @@ public class FramePresenter {
         return this.contentPanel;
     }
 
-    public void pushButton(String label, Consumer<ActionEvent> additionalAction) {
+    public void pushButton(String label, Runnable action) {
         JButton button = new JButton(label);
-        int buttonIdx = this.buttonPanel.getComponentCount();
-        button.addActionListener(evt -> {
-            if (additionalAction != null) {
-                additionalAction.accept(evt);
-            }
-            FramePresenter.this.frame.dispose();
-            FramePresenter.this.notifyButtonPressed(buttonIdx);
-        });
+        button.addActionListener(evt -> new Thread(action, label + "_thread").start());
         this.buttonPanel.add(button);
     }
 
-    public void pushButton(String label) {
-        this.pushButton(label, null);
+    public void pushTerminalButton(String label) {
+        int buttonIdx = this.buttonPanel.getComponentCount();
+        this.pushButton(label, () -> {
+            FramePresenter.this.frame.dispose();
+            FramePresenter.this.notifyButtonPressed(buttonIdx);
+        });
     }
 
     public int show() {

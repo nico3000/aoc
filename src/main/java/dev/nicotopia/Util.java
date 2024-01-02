@@ -85,9 +85,29 @@ public class Util {
     public static int min(int a, int... rem) {
         int m = a;
         for (int v : rem) {
+            m = Math.min(m, v);
+        }
+        return m;
+    }
+
+    public static float max(float a, float... rem) {
+        float m = a;
+        for (float v : rem) {
             m = Math.max(m, v);
         }
         return m;
+    }
+
+    public static float min(float a, float... rem) {
+        float m = a;
+        for (float v : rem) {
+            m = Math.min(m, v);
+        }
+        return m;
+    }
+
+    public static int clamp(int v, int min, int max) {
+        return Math.min(Math.max(min, v), max);
     }
 
     public static void main(String[] args) {

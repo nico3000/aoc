@@ -32,12 +32,20 @@ public record Vec2i(int x, int y) {
         return new Vec2i(this.x + other.x, this.y + other.y);
     }
 
+    public Vec2i sub(Vec2i other) {
+        return new Vec2i(this.x - other.x, this.y - other.y);
+    }
+
     public Vec2i mul(int v) {
         return new Vec2i(this.x * v, this.y * v);
     }
 
     public Vec2d mul(double v) {
         return new Vec2d((double) this.x * v, (double) this.y * v);
+    }
+
+    public Vec2i mulInt(double v) {
+        return new Vec2i((int) ((double) this.x * v), (int) ((double) this.y * v));
     }
 
     public Vec2i mad(int f, Vec2i v) {
