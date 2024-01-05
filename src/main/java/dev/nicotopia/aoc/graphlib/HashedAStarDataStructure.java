@@ -5,13 +5,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class HashedAStarDataStructure<Node> implements AStarDataStructure<Node> {
-    private final Map<Node, Integer> fScores = new HashMap<>();
-    private final Map<Node, Integer> gScores = new HashMap<>();
-    private final Function<Node, Integer> estimator;
-    private final Function<Node, Boolean> isFinal;
+public class HashedAStarDataStructure<NodeType> implements AStarDataStructure<NodeType> {
+    private final Map<NodeType, Integer> fScores = new HashMap<>();
+    private final Map<NodeType, Integer> gScores = new HashMap<>();
+    private final Function<NodeType, Integer> estimator;
+    private final Function<NodeType, Boolean> isFinal;
 
-    public HashedAStarDataStructure(Function<Node, Integer> estimator, Function<Node, Boolean> isFinal) {
+    public HashedAStarDataStructure(Function<NodeType, Integer> estimator, Function<NodeType, Boolean> isFinal) {
         this.estimator = estimator;
         this.isFinal = isFinal;
     }
@@ -23,33 +23,33 @@ public class HashedAStarDataStructure<Node> implements AStarDataStructure<Node> 
     }
 
     @Override
-    public void setFScore(Node n, int s) {
-        this.fScores.put(n, s);
+    public void setFScore(NodeType node, int score) {
+        this.fScores.put(node, score);
     }
 
     @Override
-    public int getFScore(Node n) {
-        return Optional.ofNullable(this.fScores.get(n)).orElseGet(() -> this.estimate(n));
+    public int getFScore(NodeType node) {
+        return Optional.ofNullable(this.fScores.get(node)).orElseGet(() -> this.estimate(node));
     }
 
     @Override
-    public void setGScore(Node n, int s) {
-        this.gScores.put(n, s);
+    public void setGScore(NodeType node, int score) {
+        this.gScores.put(node, score);
 
     }
 
     @Override
-    public int getGScore(Node n) {
-        return this.gScores.getOrDefault(n, Integer.MAX_VALUE);
+    public int getGScore(NodeType node) {
+        return this.gScores.getOrDefault(node, Integer.MAX_VALUE);
     }
 
     @Override
-    public int estimate(Node n) {
-        return this.estimator.apply(n);
+    public int estimate(NodeType node) {
+        return this.estimator.apply(node);
     }
 
     @Override
-    public boolean isFinal(Node n) {
-        return this.isFinal.apply(n);
+    public boolean isFinal(NodeType node) {
+        return this.isFinal.apply(node);
     }
 }

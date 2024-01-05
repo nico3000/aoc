@@ -13,18 +13,18 @@ import java.util.stream.Collectors;
 
 import dev.nicotopia.Pair;
 
-public class Karger<N> {
-    public record Result<N>(int minCut, Set<N> setA, Set<N> setB) {
+public class Karger<NodeType> {
+    public record Result<NodeType>(int minCut, Set<NodeType> setA, Set<NodeType> setB) {
     }
 
     private class SuperNode {
-        private final Set<N> nodes = new HashSet<>();
+        private final Set<NodeType> nodes = new HashSet<>();
 
         @Override
         public String toString() {
             String str = "";
             int c = 0;
-            for (N n : this.nodes) {
+            for (NodeType n : this.nodes) {
                 if (6 < ++c) {
                     return String.format("%s|...(%d)", str, this.nodes.size() - c + 1);
                 }
@@ -37,7 +37,7 @@ public class Karger<N> {
     private class SuperEdge {
         private final SuperNode snA;
         private final SuperNode snB;
-        private final List<Pair<N, N>> edges = new LinkedList<>();
+        private final List<Pair<NodeType, NodeType>> edges = new LinkedList<>();
 
         public SuperEdge(SuperNode a, SuperNode b) {
             this.snA = a;
@@ -50,20 +50,20 @@ public class Karger<N> {
         }
     }
 
-    private List<Pair<N, N>> originalEdges = new LinkedList<>();
+    private List<Pair<NodeType, NodeType>> originalEdges = new LinkedList<>();
     private List<SuperNode> superNodes = new LinkedList<>();
     private Set<SuperEdge> superEdges = new HashSet<>();
-    private List<Pair<N, N>> currentEdges = new LinkedList<>();
+    private List<Pair<NodeType, NodeType>> currentEdges = new LinkedList<>();
 
-    public void addEdge(N a, N b) {
+    public void addEdge(NodeType a, NodeType b) {
         this.originalEdges.add(new Pair<>(a, b));
     }
 
-    public void addEdge(Pair<N, N> edge) {
+    public void addEdge(Pair<NodeType, NodeType> edge) {
         this.originalEdges.add(edge);
     }
 
-    private SuperNode findSuperNode(N n) {
+    private SuperNode findSuperNode(NodeType n) {
         return this.superNodes.stream().filter(sn -> sn.nodes.contains(n)).findAny().get();
     }
 
@@ -76,7 +76,7 @@ public class Karger<N> {
         this.superEdges.clear();
         this.currentEdges.clear();
         this.currentEdges.addAll(this.originalEdges);
-        this.originalEdges.stream().mapMulti((Pair<N, N> t, Consumer<N> u) -> {
+        this.originalEdges.stream().mapMulti((Pair<NodeType, NodeType> t, Consumer<NodeType> u) -> {
             u.accept(t.first());
             u.accept(t.second());
         }).distinct().forEach(n -> {
@@ -84,7 +84,7 @@ public class Karger<N> {
             sn.nodes.add(n);
             this.superNodes.add(sn);
         });
-        for (Pair<N, N> edge : this.originalEdges) {
+        for (Pair<NodeType, NodeType> edge : this.originalEdges) {
             SuperEdge se = new SuperEdge(
                     this.superNodes.stream().filter(sn -> sn.nodes.contains(edge.first())).findAny().get(),
                     this.superNodes.stream().filter(sn -> sn.nodes.contains(edge.second())).findAny().get());
@@ -115,14 +115,14 @@ public class Karger<N> {
     public void runUntil(long seed, int remSuperNodes) {
         Random r = new Random(seed);
         while (remSuperNodes < this.superNodes.size() && !this.currentEdges.isEmpty()) {
-            Pair<N, N> edge = this.currentEdges.remove(r.nextInt(this.currentEdges.size()));
+            Pair<NodeType, NodeType> edge = this.currentEdges.remove(r.nextInt(this.currentEdges.size()));
             SuperNode a = this.findSuperNode(edge.first());
             SuperNode b = this.findSuperNode(edge.second());
             this.merge(a, b);
         }
     }
 
-    public Optional<Result<N>> run(long seed) {
+    public Optional<Result<NodeType>> run(long seed) {
         this.runUntil(seed, 2);
         if (this.superEdges.size() != 1 || this.superNodes.size() != 2) {
             return Optional.empty();
@@ -131,8 +131,8 @@ public class Karger<N> {
                 this.superNodes.getFirst().nodes, this.superNodes.getLast().nodes));
     }
 
-    public Karger<N> cloneState() {
-        Karger<N> clone = new Karger<>();
+    public Karger<NodeType> cloneState() {
+        Karger<NodeType> clone = new Karger<>();
         clone.originalEdges.addAll(this.originalEdges);
         clone.currentEdges.addAll(this.currentEdges);
         Map<SuperNode, SuperNode> clonedSuperNodes = new HashMap<>();

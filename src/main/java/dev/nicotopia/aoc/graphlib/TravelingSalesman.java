@@ -47,7 +47,7 @@ public class TravelingSalesman {
     /**
      * Traveling salesman algorithm
      * 
-     * @param <Node>         Type of nodes
+     * @param <NodeType>     Type of nodes
      * @param nodes          A collection of all nodes. Duplicates will be removed.
      * @param weightProvider Provides the edge's weight from first argument's node
      *                       to the second one. {@code Integer.MAX_VALUE} and
@@ -57,9 +57,9 @@ public class TravelingSalesman {
      * @return The length of the shortest path or round-trip visiting all nodes
      *         exactly once
      */
-    public static <Node> int run(Collection<Node> nodes, BiFunction<Node, Node, Integer> weightProvider,
-            Optional<Node> start) {
-        List<Node> linearNodes = nodes.stream().distinct().toList();
+    public static <NodeType> int run(Collection<NodeType> nodes, BiFunction<NodeType, NodeType, Integer> weightProvider,
+            Optional<NodeType> start) {
+        List<NodeType> linearNodes = nodes.stream().distinct().toList();
         int weights[][] = new int[linearNodes.size()][linearNodes.size()];
         for (int i = 0; i < weights.length; ++i) {
             for (int j = 0; j < weights[i].length; ++j) {
@@ -85,14 +85,15 @@ public class TravelingSalesman {
     /**
      * Traveling salesman algorithm
      * 
-     * @param <Node>         Type of nodes
+     * @param <NodeType>     Type of nodes
      * @param nodes          A collection of all nodes. Duplicates will be removed.
      * @param weightProvider Provides the edge's weight from first argument's node
      *                       to the second one. {@code Integer.MAX_VALUE} and
      *                       {@code null} are interpreted as no edge.
      * @return The length of the shortest round-trip visiting all nodes exactly once
      */
-    public static <Node> int run(Collection<Node> nodes, BiFunction<Node, Node, Integer> weightProvider) {
+    public static <NodeType> int run(Collection<NodeType> nodes,
+            BiFunction<NodeType, NodeType, Integer> weightProvider) {
         return run(nodes, weightProvider, Optional.empty());
     }
 }

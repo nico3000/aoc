@@ -42,7 +42,7 @@ public class Day23 extends DayBase {
     private Node end;
 
     private void buildGraph() {
-        char[][] map = this.getPrimaryPuzzleInput().stream().map(l -> l.toCharArray()).toArray(char[][]::new);
+        char[][] map = this.getPrimaryPuzzleInputAs2DCharArray();
         Function<Vec2i, Integer> getNonWallNeighbours = p -> (map[p.y() - 1][p.x()] != '#' ? 1 : 0)
                 + (map[p.y()][p.x() + 1] != '#' ? 1 : 0) + (map[p.y() + 1][p.x()] != '#' ? 1 : 0)
                 + (map[p.y()][p.x() - 1] != '#' ? 1 : 0);

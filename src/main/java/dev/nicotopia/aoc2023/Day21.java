@@ -43,7 +43,7 @@ public class Day21 extends DayBase {
     }
 
     private void processInput() {
-        this.map = this.getPrimaryPuzzleInput().stream().map(String::toCharArray).toArray(char[][]::new);
+        this.map = this.getPrimaryPuzzleInputAs2DCharArray();
         this.start = Vec2i.streamFromRectangle(0, 0, this.map.length, this.map[0].length)
                 .filter(p -> this.map[p.y()][p.x()] == 'S').findAny().get();
         this.map[this.start.y()][this.start.x()] = '.';

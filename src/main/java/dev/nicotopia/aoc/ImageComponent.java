@@ -48,6 +48,7 @@ public class ImageComponent extends JComponent {
         public void mouseReleased(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 this.pressed = false;
+                ImageComponent.this.offset = ImageComponent.this.getClampedOffset();
             }
         }
 
@@ -67,16 +68,29 @@ public class ImageComponent extends JComponent {
         this.setPreferredSize(new Dimension(1280, 720));
         new ImageMouseListener();
         float widthScaling = 1280.0f / (float) image.getWidth(this);
-        this.scaling = Util.max(widthScaling, 1.0f);
+        float heightScaling = 720.0f / (float) image.getHeight(this);
+        this.scaling = 1.0f <= heightScaling ? heightScaling : widthScaling;
+        this.offset = new Vec2i((1280 - this.getImageDimension().x()) / 2, 0);
     }
 
     @Override
     public void paint(Graphics g) {
+        Vec2i dim = this.getImageDimension();
+        Vec2i p = this.getClampedOffset();
+        g.drawImage(this.image, p.x(), p.y(), dim.x(), dim.y(), this);
+    }
+
+    private Vec2i getImageDimension() {
         int w = (int) Math.ceil((float) this.image.getWidth(this) * this.scaling);
         int h = (int) Math.ceil((float) this.image.getHeight(this) * this.scaling);
-        int x = Util.clamp(this.offset.x(), -w + 8, this.getWidth() - 8);
-        int y = Util.clamp(this.offset.y(), -h + 8, this.getHeight() - 8);
-        g.drawImage(this.image, x, y, w, h, this);
+        return new Vec2i(w, h);
+    }
+
+    private Vec2i getClampedOffset() {
+        Vec2i dim = this.getImageDimension();
+        int x = Util.clamp(this.offset.x(), -dim.x() + 8, this.getWidth() - 8);
+        int y = Util.clamp(this.offset.y(), -dim.y() + 8, this.getHeight() - 8);
+        return new Vec2i(x, y);
     }
 
     private void scale(Vec2i fixPoint, float factor) {

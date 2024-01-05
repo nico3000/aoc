@@ -4,16 +4,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HashedDijkstraDataStructure<Node> implements DijkstraDataStructure<Node> {
-    private final Map<Node, Integer> distances = new HashMap<>();
+public class HashedDijkstraDataStructure<NodeType> implements DijkstraDataStructure<NodeType> {
+    private final Map<NodeType, Integer> distances = new HashMap<>();
 
     @Override
-    public Integer getDistance(Node node) {
+    public Integer getDistance(NodeType node) {
         return this.distances.get(node);
     }
 
     @Override
-    public void setDistance(Node node, int distance) {
+    public void setDistance(NodeType node, int distance) {
         this.distances.put(node, distance);
     }
 
@@ -28,7 +28,7 @@ public class HashedDijkstraDataStructure<Node> implements DijkstraDataStructure<
      * 
      * @return The shortest distance map
      */
-    public Map<Node, Integer> getDistanceMap() {
+    public Map<NodeType, Integer> getDistanceMap() {
         return Collections.unmodifiableMap(this.distances);
     }
 }

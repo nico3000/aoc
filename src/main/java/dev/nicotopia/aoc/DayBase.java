@@ -97,6 +97,10 @@ public abstract class DayBase implements Runnable {
         return this.getPuzzleInput().getPrimaryInputLines();
     }
 
+    public char[][] getPrimaryPuzzleInputAs2DCharArray() {
+        return this.getPrimaryPuzzleInput().stream().map(l -> l.toCharArray()).toArray(char[][]::new);
+    }
+
     public int getIntInput(String name) {
         return Integer.valueOf(this.getInput(name));
     }

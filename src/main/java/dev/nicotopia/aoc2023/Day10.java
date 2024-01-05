@@ -20,7 +20,7 @@ public class Day10 extends DayBase {
     private Classification classifications[][];
 
     private void processInput() {
-        this.arena = this.getPrimaryPuzzleInput().stream().map(String::toCharArray).toArray(char[][]::new);
+        this.arena = this.getPrimaryPuzzleInputAs2DCharArray();
         for (int rowIdx = 0; rowIdx < this.arena.length; ++rowIdx) {
             int colIdx = String.valueOf(this.arena[rowIdx]).indexOf('S');
             if (colIdx != -1) {

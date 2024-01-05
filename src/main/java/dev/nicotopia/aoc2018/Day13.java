@@ -81,7 +81,7 @@ public class Day13 extends DayBase {
     private char[][] track;
 
     private void processInput() {
-        this.track = this.getPrimaryPuzzleInput().stream().map(l -> l.toCharArray()).toArray(char[][]::new);
+        this.track = this.getPrimaryPuzzleInputAs2DCharArray();
         for (int y = 0; y < track.length; ++y) {
             for (int x = 0; x < track[y].length; ++x) {
                 switch (track[y][x]) {

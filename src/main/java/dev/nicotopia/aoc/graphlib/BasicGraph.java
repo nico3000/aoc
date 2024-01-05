@@ -1,6 +1,6 @@
 package dev.nicotopia.aoc.graphlib;
 
-public interface BasicGraph<Node> {
+public interface BasicGraph<NodeType> {
     /**
      * Retrieves the nth neighbour of a given node together with its distance or
      * null if it does not exist. Once this method returns null for a given idx it
@@ -10,5 +10,5 @@ public interface BasicGraph<Node> {
      * @param index The neighbour's index
      * @return The neighbour and the distance to it
      */
-    public NodeDistancePair<Node> getNeighbour(Node node, int index);
+    public NodeDistancePair<NodeType> getNeighbour(NodeType node, int index);
 }
