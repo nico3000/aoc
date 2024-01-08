@@ -2,12 +2,9 @@ package dev.nicotopia.aoc2018;
 
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.aoc.DayBase;
-import dev.nicotopia.aoc2018.Machine.OpCode;
 import dev.nicotopia.aoc2018.Machine.Operation;
 
 public class Day19 extends DayBase {
@@ -16,11 +13,7 @@ public class Day19 extends DayBase {
     private List<Operation> ops;
 
     private void processInput() {
-        Pattern p = Pattern.compile("([a-z]+) (\\d+) (\\d+) (\\d+)");
-        this.ops = this.getPrimaryPuzzleInput().stream().map(p::matcher).filter(Matcher::matches)
-                .map(m -> new Operation(OpCode.valueOf(m.group(1).toUpperCase()), Integer.valueOf(m.group(2)),
-                        Integer.valueOf(m.group(3)), Integer.valueOf(m.group(4))))
-                .toList();
+        this.ops = this.getPrimaryPuzzleInput().stream().map(Operation::fromAsm).filter(o -> o != null).toList();
         this.ipReg = this.getPrimaryPuzzleInput().stream().filter(l -> l.startsWith("#ip ")).findAny()
                 .map(l -> Integer.valueOf(l.substring(4))).get();
     }

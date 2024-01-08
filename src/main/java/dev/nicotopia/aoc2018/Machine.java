@@ -13,7 +13,7 @@ public class Machine {
     }
 
     public record Operation(OpCode code, int a, int b, int c) {
-        public static Operation createFromLine(String line) {
+        public static Operation fromAsm(String line) {
             String o = Arrays.stream(OpCode.values()).map(c -> c.toString().toLowerCase())
                     .collect(Collectors.joining("|"));
             Matcher m = Pattern.compile(String.format("^(%s)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)$", o))

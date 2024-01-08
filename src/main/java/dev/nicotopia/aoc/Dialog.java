@@ -57,6 +57,13 @@ public class Dialog {
         Dialog.showImage(title, imageData[0].length, imageData.length, (x, y) -> color.apply(imageData[y][x]));
     }
 
+    public static <E> void showImage(String title, int[][] imageData, Function<Integer, Color> color) {
+        if (Arrays.stream(imageData).mapToInt(r -> r.length).distinct().count() != 1) {
+            throw new AocException("Image data must be rectangular.");
+        }
+        Dialog.showImage(title, imageData[0].length, imageData.length, (x, y) -> color.apply(imageData[y][x]));
+    }
+
     public static <E> void showImage(String title, E[][] imageData) {
         List<Integer> palette = new LinkedList<>(Arrays.asList(0x222222, 0xffffff, 0x4b4e6d, 0x84dcc6, 0x95a3b3));
         Map<E, Color> colors = new HashMap<>();
