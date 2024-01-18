@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.Dialog;
+import dev.nicotopia.aoc.ImageComponent;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day17 extends DayBase {
@@ -119,11 +120,12 @@ public class Day17 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day17e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         this.addTask("Part two", Arrays.stream(this.map).map(Arrays::stream).flatMap(s -> s)
                 .filter(m -> m == Material.STANDING_WATER)::count);
-        this.pushPostResultsOption("Show image...", () -> Dialog.showImage("The beautiful image <3", this.map));
+        this.pushPostResultsOption("Show image...", () -> Dialog.showImage("The beautiful image <3",
+                new ImageComponent(ImageComponent.imageFrom(this.map))));
     }
 }

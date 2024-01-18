@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -69,21 +68,6 @@ public class PuzzleInputSelector {
 
     public void addPreset(String presetName, String rawPrimaryInput, Object... secondaryInputValues) {
         this.addPreset(presetName, Arrays.asList(rawPrimaryInput.split("\n")), secondaryInputValues);
-    }
-
-    public void addPresetFromResource(String presetName, String primaryInputResourcePath,
-            Object secondaryInputValues[]) {
-        if (this.secondaryInputs.size() != secondaryInputValues.length) {
-            throw new RuntimeException(String.format(
-                    "Number of registered secondary inputs (%d) does not match number of given secondary inputs (%d) for preset %s.\n",
-                    this.secondaryInputs.size(), secondaryInputValues.length, presetName));
-        }
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                PuzzleInputSelector.class.getResourceAsStream(primaryInputResourcePath)))) {
-            this.addPreset(presetName, br.lines().toList(), secondaryInputValues);
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
-        }
     }
 
     public PuzzleInput getPuzzleInput(boolean reuseLastInput) throws InterruptedException {

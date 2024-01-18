@@ -106,7 +106,7 @@ public class Day13 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day13e.txt");
+        this.addDefaultExamplePresets();
         List<Ground> grounds = this.addSilentTask("Process input", this::processInput);
         this.addTask("Part one", () -> grounds.stream().mapToInt(g -> g.getMirrorPosValue(false)).sum());
         this.addTask("Part one", () -> grounds.stream().mapToInt(g -> g.getMirrorPosValue(true)).sum());

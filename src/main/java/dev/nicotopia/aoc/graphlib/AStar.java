@@ -44,7 +44,8 @@ public class AStar {
                 int tentativeGScore = asds.getGScore(c) + neighbour.distance();
                 if (tentativeGScore < asds.getGScore(neighbour.node())) {
                     asds.setGScore(neighbour.node(), tentativeGScore);
-                    asds.setFScore(neighbour.node(), tentativeGScore + asds.estimate(neighbour.node()));
+                    asds.setFScore(neighbour.node(),
+                            tentativeGScore + (asds.isFinal(neighbour.node()) ? 0 : asds.estimate(neighbour.node())));
                     if (visited.contains(neighbour.node())) {
                         visited.remove(neighbour.node());
                     }

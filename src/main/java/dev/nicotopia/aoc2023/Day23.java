@@ -146,7 +146,7 @@ public class Day23 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day23e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Build graph", this::buildGraph);
         this.addTask("Part one", this::longestPath);
         this.addTask("Part two", this::partTwo);

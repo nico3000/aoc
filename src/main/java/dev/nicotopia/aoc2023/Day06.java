@@ -39,7 +39,7 @@ public class Day06 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day06e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one",
                 () -> this.games.stream().mapToLong(Game::getNumWinningOutcomes).reduce(1, (a, b) -> a * b));

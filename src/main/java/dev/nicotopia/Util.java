@@ -3,6 +3,7 @@ package dev.nicotopia;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.LongPredicate;
 import java.util.stream.Stream;
 
 public class Util {
@@ -48,7 +49,15 @@ public class Util {
         return String.join(", ", out);
     }
 
+    public static int gcd(int a, int b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
+        return a == 0 ? b : b == 0 ? a : gcd(Math.max(a, b) % Math.min(a, b), Math.min(a, b));
+    }
+
     public static long gcd(long a, long b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
         return a == 0 ? b : b == 0 ? a : gcd(Math.max(a, b) % Math.min(a, b), Math.min(a, b));
     }
 
@@ -74,7 +83,7 @@ public class Util {
         return c;
     }
 
-    public static int max(int a, int... rem) {
+    public static int largestOf(int a, int... rem) {
         int m = a;
         for (int v : rem) {
             m = Math.max(m, v);
@@ -82,7 +91,7 @@ public class Util {
         return m;
     }
 
-    public static int min(int a, int... rem) {
+    public static int lowestOf(int a, int... rem) {
         int m = a;
         for (int v : rem) {
             m = Math.min(m, v);
@@ -90,7 +99,7 @@ public class Util {
         return m;
     }
 
-    public static float max(float a, float... rem) {
+    public static float largestOf(float a, float... rem) {
         float m = a;
         for (float v : rem) {
             m = Math.max(m, v);
@@ -98,7 +107,7 @@ public class Util {
         return m;
     }
 
-    public static float min(float a, float... rem) {
+    public static float lowestOf(float a, float... rem) {
         float m = a;
         for (float v : rem) {
             m = Math.min(m, v);
@@ -110,7 +119,29 @@ public class Util {
         return Math.min(Math.max(min, v), max);
     }
 
-    public static void main(String[] args) {
-        System.out.println(gcd(17 * 2 * 5 * 13, 17 * 2 * 7 * 11));
+    public static double clamp(double v, double min, double max) {
+        return Math.min(Math.max(min, v), max);
+    }
+
+    /**
+     * Returns the smallest v with less(v) == false
+     * @param less A function
+     * @return The smallest v with less(v) == false
+     */
+    public static long binarySearch(LongPredicate less) {
+        long r = 1;
+        while (less.test(r)) {
+            r *= 2;
+        }
+        long l = r / 2;
+        while (l < r) {
+            long m = (l + r) / 2;
+            if (less.test(m)) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return l;
     }
 }

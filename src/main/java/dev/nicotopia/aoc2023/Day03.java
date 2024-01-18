@@ -58,7 +58,7 @@ public class Day03 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day03e.txt");
+        this.addDefaultExamplePresets();
         this.lines = this.getPrimaryPuzzleInput();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);

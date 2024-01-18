@@ -132,7 +132,7 @@ public class Day14 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day14e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Part one", () -> {
             Dish dish = new Dish();
             dish.tiltNorth();

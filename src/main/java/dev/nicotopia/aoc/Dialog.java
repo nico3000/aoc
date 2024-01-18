@@ -1,18 +1,11 @@
 package dev.nicotopia.aoc;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -50,41 +43,9 @@ public class Dialog {
                 "No").show() == 0;
     }
 
-    public static <E> void showImage(String title, E[][] imageData, Function<E, Color> color) {
-        if (Arrays.stream(imageData).mapToInt(r -> r.length).distinct().count() != 1) {
-            throw new AocException("Image data must be rectangular.");
-        }
-        Dialog.showImage(title, imageData[0].length, imageData.length, (x, y) -> color.apply(imageData[y][x]));
-    }
-
-    public static <E> void showImage(String title, int[][] imageData, Function<Integer, Color> color) {
-        if (Arrays.stream(imageData).mapToInt(r -> r.length).distinct().count() != 1) {
-            throw new AocException("Image data must be rectangular.");
-        }
-        Dialog.showImage(title, imageData[0].length, imageData.length, (x, y) -> color.apply(imageData[y][x]));
-    }
-
-    public static <E> void showImage(String title, E[][] imageData) {
-        List<Integer> palette = new LinkedList<>(Arrays.asList(0x222222, 0xffffff, 0x4b4e6d, 0x84dcc6, 0x95a3b3));
-        Map<E, Color> colors = new HashMap<>();
-        Dialog.showImage(title, imageData, v -> {
-            Color c = colors.get(v);
-            if (c == null) {
-                colors.put(v, c = new Color(palette.isEmpty() ? v.hashCode() : palette.remove(0)));
-            }
-            return c;
-        });
-    }
-
-    public static void showImage(String title, int width, int height, BiFunction<Integer, Integer, Color> pixels) {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
-                image.setRGB(x, y, pixels.apply(x, y).getRGB());
-            }
-        }
-        Dialog d = new Dialog(title, new ImageComponent(image), null);
-        d.pushButton("Save...", () -> Dialog.saveImage(image, d.getFrame()));
+    public static void showImage(String title, ImageComponent imageComponent) {
+        Dialog d = new Dialog(title, imageComponent, null);
+        d.pushButton("Save...", () -> Dialog.saveImage(imageComponent.getImage(), d.getFrame()));
         d.pushTerminalButton("Close");
         d.show();
     }

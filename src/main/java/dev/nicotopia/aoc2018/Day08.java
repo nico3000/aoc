@@ -56,7 +56,7 @@ public class Day08 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day08e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Input processing", () -> {
             this.root = this.parseNode(
                     new IntegerInputStream(Arrays.stream(this.getPrimaryPuzzleInput().getFirst().split("\\s+"))

@@ -185,7 +185,7 @@ public class Day12 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day12e.txt");
+        this.addDefaultExamplePresets();
         List<Line> lines = this.addSilentTask("Process input",
                 () -> this.getPrimaryPuzzleInput().stream().map(l -> l.split("\\s+"))
                         .map(s -> new Line(s[0], Arrays.stream(s[1].split(",")).mapToInt(Integer::valueOf).toArray()))

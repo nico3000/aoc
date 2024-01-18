@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 import dev.nicotopia.Pair;
 
 public record Vec2i(int x, int y) {
+    public static Vec2i ORIGIN = new Vec2i(0, 0);
+
     public static Stream<Vec2i> streamFromRectangle(int beginX, int beginY, int endX, int endY) {
         return IntStream.range(beginX, endX)
                 .mapToObj(x -> IntStream.range(beginY, endY).mapToObj(y -> new Vec2i(x, y)).toList())
@@ -46,6 +48,10 @@ public record Vec2i(int x, int y) {
 
     public Vec2i mulInt(double v) {
         return new Vec2i((int) ((double) this.x * v), (int) ((double) this.y * v));
+    }
+
+    public Vec2i divide(int divisor) {
+        return new Vec2i(this.x / divisor, this.y / divisor);
     }
 
     public Vec2i mad(int f, Vec2i v) {

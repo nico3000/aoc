@@ -211,12 +211,7 @@ public class Day15 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example 1", "/2018/day15e1.txt");
-        this.addPresetFromResource("Example 2", "/2018/day15e2.txt");
-        this.addPresetFromResource("Example 3", "/2018/day15e3.txt");
-        this.addPresetFromResource("Example 4", "/2018/day15e4.txt");
-        this.addPresetFromResource("Example 5", "/2018/day15e5.txt");
-        this.addPresetFromResource("Example 6", "/2018/day15e6.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Part one", () -> this.fight(() -> false).getAsInt());
         this.addTask("Part two", this::partTwo);
     }

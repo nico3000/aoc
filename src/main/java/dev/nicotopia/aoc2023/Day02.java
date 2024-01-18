@@ -40,7 +40,7 @@ public class Day02 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day02e.txt");
+        this.addDefaultExamplePresets();
         List<List<Draw>> games = this.addSilentTask("Input processing", this::processInput);
         this.addTask("Part one", () -> this.partOne(games));
         this.addTask("Part two", () -> this.partTwo(games));

@@ -40,7 +40,7 @@ public class Day15 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day15e.txt");
+        this.addDefaultExamplePresets();
         List<String> steps = this.addSilentTask("Process input",
                 () -> this.getPrimaryPuzzleInput().stream().map(l -> l.split(",")).flatMap(Arrays::stream).toList());
         this.addTask("Part one", () -> steps.stream().mapToInt(this::hash).sum());

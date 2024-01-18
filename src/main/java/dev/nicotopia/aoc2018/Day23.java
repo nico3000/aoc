@@ -86,7 +86,7 @@ public class Day23 extends DayBase {
         Vec3i max = new Vec3i(this.nanobots.stream().mapToInt(n -> n.pos.x() - n.range).max().getAsInt(),
                 this.nanobots.stream().mapToInt(n -> n.pos.y() - n.range).max().getAsInt(),
                 this.nanobots.stream().mapToInt(n -> n.pos.z() - n.range).max().getAsInt());
-        int initialCubeSize = 2 * Integer.highestOneBit(Util.max(max.x() - min.x(), max.y() - min.y(),
+        int initialCubeSize = 2 * Integer.highestOneBit(Util.largestOf(max.x() - min.x(), max.y() - min.y(),
                 max.z() - min.z()) + 1);
         PriorityQueue<Pair<Cube, Integer>> queue = new PriorityQueue<>(
                 (a, b) -> Integer.compare(b.second(), a.second()));
@@ -113,8 +113,7 @@ public class Day23 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example 1", "/2018/day23e1.txt");
-        this.addPresetFromResource("Example 2", "/2018/day23e2.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         this.addTask("Part two", this::partTwo);

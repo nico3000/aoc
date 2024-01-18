@@ -111,7 +111,7 @@ public class Day22 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day22e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         this.addTask("Part two", this::partTwo);

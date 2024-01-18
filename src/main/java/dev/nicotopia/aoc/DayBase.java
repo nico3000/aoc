@@ -2,6 +2,10 @@ package dev.nicotopia.aoc;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,9 +57,6 @@ public abstract class DayBase implements Runnable {
     private final Timer timer = new Timer();
     private PuzzleInput puzzleInput;
 
-    public DayBase() {
-    }
-
     public void pushSecondaryInputs(SecondaryInput... secondaryInputs) {
         this.puzzleInputSelector.pushSecondaryInputs(secondaryInputs);
     }
@@ -66,7 +67,39 @@ public abstract class DayBase implements Runnable {
 
     public void addPresetFromResource(String presetName, String primaryInputResourcePath,
             Object... secondaryInputValues) {
-        this.puzzleInputSelector.addPresetFromResource(presetName, primaryInputResourcePath, secondaryInputValues);
+        InputStream is = DayBase.class.getResourceAsStream(primaryInputResourcePath);
+        if (is == null) {
+            throw new AocException("Resource not found: %s", primaryInputResourcePath);
+        }
+        this.addPresetFromInputStream(presetName, is, secondaryInputValues);
+    }
+
+    public boolean addPresetFromInputStream(String presetName, InputStream is, Object... secondaryInputValues) {
+        if (is != null) {
+            try (is) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                    this.addPreset(presetName, br.lines().toList(), secondaryInputValues);
+                    return true;
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public void addDefaultExamplePresets() {
+        Optional<Pair<Integer, Integer>> yearAndDay = this.getYearAndDay();
+        if (yearAndDay.isPresent()) {
+            String base = String.format("/%d/day%02de", yearAndDay.get().first(), yearAndDay.get().second());
+            this.addPresetFromInputStream("Example", DayBase.class.getResourceAsStream(base + ".txt"));
+            for (int i = 1;; ++i) {
+                InputStream is = DayBase.class.getResourceAsStream(String.format("%s%d.txt", base, i));
+                if (!this.addPresetFromInputStream("Example " + i, is)) {
+                    break;
+                }
+            }
+        }
     }
 
     public void addPreset(String presetName, List<String> primaryInputLines, Object... secondaryInputValues) {

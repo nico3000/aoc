@@ -104,8 +104,7 @@ public class Day17 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example 1", "/2023/day17e1.txt");
-        this.addPresetFromResource("Example 2", "/2023/day17e2.txt");
+        this.addDefaultExamplePresets();
         this.map = this.addSilentTask("Process input", () -> this.getPrimaryPuzzleInput().stream()
                 .map(l -> l.chars().map(c -> c - '0').toArray()).toArray(int[][]::new));
         Vec2i dest = new Vec2i(map[map.length - 1].length - 1, map.length - 1);

@@ -67,7 +67,7 @@ public class Day10 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day10e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         int timePoint = this.addTask("Both parts", this::findCloseTimePoint);
         boolean done = false;

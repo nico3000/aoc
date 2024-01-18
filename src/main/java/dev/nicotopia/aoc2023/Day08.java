@@ -116,9 +116,7 @@ public class Day08 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example 1", "/2023/day08e1.txt");
-        this.addPresetFromResource("Example 2", "/2023/day08e2.txt");
-        this.addPresetFromResource("Example 3", "/2023/day08e3.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         this.addTask("Part two", this::partTwo);

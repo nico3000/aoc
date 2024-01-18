@@ -100,7 +100,7 @@ public class Day18 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2023/day18e.txt");
+        this.addDefaultExamplePresets();
         List<String> partTwoInstr = this.addSilentTask("Translate instructions", this::translateInstructions);
         this.addTask("Part one", () -> this.fill(this.getPrimaryPuzzleInput()));
         this.addTask("Part two", () -> this.fill(partTwoInstr));

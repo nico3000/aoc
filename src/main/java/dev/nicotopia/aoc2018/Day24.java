@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dev.nicotopia.Util;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
 
@@ -139,28 +140,17 @@ public class Day24 extends DayBase {
     }
 
     private int partTwo() {
-        this.boost = 0;
-        while (this.getCombatWinner() != Faction.IMMUNE_SYSTEM) {
-            this.boost = Math.max(1, 2 * this.boost);
-        }
-        int l = this.boost / 2;
-        int r = this.boost;
-        while (l < r) {
-            this.boost = (l + r) / 2;
-            if (this.getCombatWinner() == Faction.IMMUNE_SYSTEM) {
-                r = this.boost;
-            } else {
-                l = this.boost + 1;
-            }
-        }
-        this.boost = r;
+        this.boost = (int) Util.binarySearch(v -> {
+            this.boost = (int) v;
+            return this.getCombatWinner() != Faction.IMMUNE_SYSTEM;
+        });
         this.getCombatWinner();
         return this.remaining.stream().mapToInt(g -> g.numUnits).sum();
     }
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day24e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         this.addTask("Part two", this::partTwo);

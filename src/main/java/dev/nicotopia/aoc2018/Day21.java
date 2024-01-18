@@ -16,7 +16,7 @@ public class Day21 extends DayBase {
 
     private boolean processInput() {
         int[] numbers = this.getPrimaryPuzzleInput().stream().map(Operation::fromAsm).filter(op -> op != null)
-                .mapToInt(op -> Util.max(op.a(), op.b(), op.c())).distinct().sorted().toArray();
+                .mapToInt(op -> Util.largestOf(op.a(), op.b(), op.c())).distinct().sorted().toArray();
         this.numberA = numbers[numbers.length - 2];
         this.numberB = numbers[numbers.length - 3];
         return (numbers[numbers.length - 1] == 0xffffff && numbers[numbers.length - 4] == 0x10000)

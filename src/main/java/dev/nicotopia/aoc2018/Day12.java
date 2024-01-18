@@ -97,7 +97,7 @@ public class Day12 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day12e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         if (Dialog.showYesNoQuestion("Info",

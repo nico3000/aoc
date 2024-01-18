@@ -9,6 +9,7 @@ import dev.nicotopia.Pair;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.Dialog;
+import dev.nicotopia.aoc.ImageComponent;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day18 extends DayBase {
@@ -91,15 +92,16 @@ public class Day18 extends DayBase {
 
     @Override
     public void run() {
-        this.addPresetFromResource("Example", "/2018/day18e.txt");
+        this.addDefaultExamplePresets();
         this.addTask("Part one", () -> this.run(10));
         this.addTask("Part two", () -> this.run(1000000000));
         this.pushPostResultsOption("Show map", () -> {
-            Dialog.showImage("Fancy map <3", this.width, this.height, (x, y) -> switch (this.get(x, y)) {
-                case OPEN -> new Color(0x26d07c);
-                case TREES -> new Color(0x006e33);
-                case LUMBERYARD -> new Color(0x664228);
-            });
+            Dialog.showImage("Fancy map <3", new ImageComponent(
+                    ImageComponent.imageFrom(this.width, this.height, (x, y) -> switch (this.get(x, y)) {
+                        case OPEN -> new Color(0x26d07c);
+                        case TREES -> new Color(0x006e33);
+                        case LUMBERYARD -> new Color(0x664228);
+                    })));
         });
     }
 }
