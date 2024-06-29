@@ -17,40 +17,43 @@ public class IntcodeMachine {
         HALTED, AWAITING_INPUT,
     }
 
-    private final Map<Long, Long> originalProgram = new HashMap<>();
-    private final Map<Long, Long> program = new HashMap<>();
+    private final Map<Long, Long> originalProgram;
+    private final Map<Long, Long> changed = new HashMap<>();
     private long relativeBase;
     private long ip;
 
+    private IntcodeMachine(Map<Long, Long> originalProgram) {
+        this.originalProgram = originalProgram;
+    }
+
     public IntcodeMachine(String values) {
-        if (values != null) {
-            long[] initial = Arrays.stream(values.split(",")).mapToLong(Long::valueOf).toArray();
-            for (int i = 0; i < initial.length; ++i) {
-                this.originalProgram.put((long) i, initial[i]);
-                this.program.put((long) i, initial[i]);
-            }
+        this.originalProgram = new HashMap<>();
+        long[] initial = Arrays.stream(values.split(",")).mapToLong(Long::valueOf).toArray();
+        for (int i = 0; i < initial.length; ++i) {
+            this.originalProgram.put((long) i, initial[i]);
         }
         this.relativeBase = 0;
         this.ip = 0;
     }
 
     public void reset() {
-        this.program.clear();
-        this.program.putAll(this.originalProgram);
+        this.changed.clear();
         this.relativeBase = 0L;
         this.ip = 0;
     }
 
     public void set(long idx, long val) {
-        if (val == 0) {
-            this.program.remove(idx);
+        Long originalVal = this.originalProgram.get(idx);
+        if ((originalVal != null && originalVal == val) || (originalVal == null && val == 0)) {
+            this.changed.remove(idx);
         } else {
-            this.program.put(idx, val);
+            this.changed.put(idx, val);
         }
     }
 
     public long get(long idx) {
-        return this.program.getOrDefault(idx, 0L);
+        Long val = this.changed.get(idx);
+        return val != null ? val : this.originalProgram.getOrDefault(idx, 0L);
     }
 
     private long evalParam(int paramIdx) {
@@ -58,7 +61,7 @@ public class IntcodeMachine {
     }
 
     private void writeToParam(int paramIdx, long val) {
-        this.program.put(this.evalParamToIdx(paramIdx), val);
+        this.set(this.evalParamToIdx(paramIdx), val);
     }
 
     private long evalParamToIdx(int paramIdx) {
@@ -143,9 +146,8 @@ public class IntcodeMachine {
 
     @Override
     public IntcodeMachine clone() {
-        IntcodeMachine clone = new IntcodeMachine(null);
-        clone.originalProgram.putAll(this.originalProgram);
-        clone.program.putAll(this.program);
+        IntcodeMachine clone = new IntcodeMachine(this.originalProgram);
+        clone.changed.putAll(this.changed);
         clone.relativeBase = this.relativeBase;
         clone.ip = this.ip;
         return clone;

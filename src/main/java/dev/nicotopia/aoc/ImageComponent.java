@@ -113,6 +113,14 @@ public class ImageComponent extends JComponent {
         return image;
     }
 
+    public static <E> BufferedImage imageFrom(Map<Vec2i, E> map, Function<E, Color> colorGetter) {
+        var extents = Vec2i.getExtents(map.keySet());
+        Vec2i min = extents.first().sub(new Vec2i(1, 1));
+        Vec2i max = extents.second().add(new Vec2i(1, 1));
+        return ImageComponent.imageFrom(max.x() - min.x() + 1, max.y() - min.y() + 1,
+                (x, y) -> colorGetter.apply(map.get(new Vec2i(min.x() + x, min.y() + y))));
+    }
+
     private BufferedImage image;
     private Vec2d offset = new Vec2d(0.0, 0.0);
     private float scaling = 1.0f;
