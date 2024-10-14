@@ -131,16 +131,22 @@ public class IntcodeMachine {
         return Status.HALTED;
     }
 
-    public List<Long> execute(long... inputs) {
+    public List<Long> execute(long... input) {
         List<Long> output = new ArrayList<>();
         this.execute(new Supplier<OptionalLong>() {
             private int idx = 0;
 
             @Override
             public OptionalLong get() {
-                return this.idx < inputs.length ? OptionalLong.of(inputs[this.idx++]) : OptionalLong.empty();
+                return this.idx < input.length ? OptionalLong.of(input[this.idx++]) : OptionalLong.empty();
             }
         }, output::add);
+        return output;
+    }
+
+    public List<Long> executeAndReset(long... input) {
+        List<Long> output = this.execute(input);
+        this.reset();
         return output;
     }
 
