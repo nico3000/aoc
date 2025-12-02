@@ -88,7 +88,7 @@ public abstract class DayBase implements Runnable {
         return false;
     }
 
-    public void addDefaultExamplePresets() {
+    private void addDefaultExamplePresets() {
         Optional<Pair<Integer, Integer>> yearAndDay = this.getYearAndDay();
         if (yearAndDay.isPresent()) {
             String base = String.format("/%d/day%02de", yearAndDay.get().first(), yearAndDay.get().second());
@@ -132,6 +132,10 @@ public abstract class DayBase implements Runnable {
 
     public char[][] getPrimaryPuzzleInputAs2DCharArray() {
         return this.getPrimaryPuzzleInput().stream().map(l -> l.toCharArray()).toArray(char[][]::new);
+    }
+
+    public CharMap2D getPrimaryPuzzleInputAsCharMap2D() {
+        return new CharMap2D(this.getPrimaryPuzzleInputAs2DCharArray());
     }
 
     public int getIntInput(String name) {
@@ -255,6 +259,7 @@ public abstract class DayBase implements Runnable {
         if (ClassLoader.getSystemClassLoader().loadClass(className).getConstructor()
                 .newInstance() instanceof DayBase aoc) {
             aoc.reuseLastInput = argList.indexOf("-r") != -1;
+            aoc.addDefaultExamplePresets();
             aoc.run();
             aoc.showResults();
         } else {

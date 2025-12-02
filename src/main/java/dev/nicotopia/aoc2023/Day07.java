@@ -63,7 +63,6 @@ public class Day07 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         Function<RuleType, List<Hand>> toHands = rt -> this.getPrimaryPuzzleInput().stream()
                 .map(l -> createHand(rt, l.substring(0, 5), Integer.valueOf(l.substring(6)))).sorted().toList();
         Function<List<Hand>, Integer> sumUp = l -> IntStream.range(0, l.size()).map(i -> (i + 1) * l.get(i).bid).sum();

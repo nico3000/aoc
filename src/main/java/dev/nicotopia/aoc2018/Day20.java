@@ -14,11 +14,7 @@ import dev.nicotopia.aoc.graphlib.Node;
 import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day20 extends DayBase {
-    private final Map<Vec2i, Room> rooms = new HashMap<>();
-    private final HashedDijkstraDataStructure<Node> dds = new HashedDijkstraDataStructure<>();
-    private final Room start = new Room(0, 0);
-
-    private class Room implements Node {
+    private class Room implements Node<Room> {
         private final Vec2i coords;
         private final List<Room> doors = new ArrayList<>(4);
 
@@ -39,10 +35,14 @@ public class Day20 extends DayBase {
         }
 
         @Override
-        public NodeDistancePair<Node> getNeighbour(int idx) {
-            return this.doors.size() <= idx ? null : new NodeDistancePair<Node>(this.doors.get(idx), 1);
+        public NodeDistancePair<Room> getNeighbour(int idx) {
+            return this.doors.size() <= idx ? null : new NodeDistancePair<Room>(this.doors.get(idx), 1);
         }
     }
+
+    private final Map<Vec2i, Room> rooms = new HashMap<>();
+    private final HashedDijkstraDataStructure<Room> dds = new HashedDijkstraDataStructure<>();
+    private final Room start = new Room(0, 0);
 
     private void processInput() {
         this.rooms.put(this.start.coords, this.start);
@@ -71,7 +71,6 @@ public class Day20 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Dijkstra", () -> Dijkstra.run(this.start, this.dds));
         this.addTask("Part one", this::partOne);

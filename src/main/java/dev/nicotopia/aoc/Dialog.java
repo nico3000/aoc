@@ -43,6 +43,14 @@ public class Dialog {
                 "No").show() == 0;
     }
 
+    public static boolean showYesNoWithImage(String title, String message, ImageComponent imageComponent) {
+        JPanel panel = new JPanel();
+        panel.add(new JLabel(message));
+        panel.add(imageComponent);
+        Dialog d = new Dialog(title, panel, UIManager.getIcon("OptionPane.questionIcon"), "Yes", "No");
+        return d.show() == 0;
+    }
+
     public static void showImage(String title, ImageComponent imageComponent) {
         Dialog d = new Dialog(title, imageComponent, null);
         d.pushButton("Save...", () -> Dialog.saveImage(imageComponent.getImage(), d.getFrame()));

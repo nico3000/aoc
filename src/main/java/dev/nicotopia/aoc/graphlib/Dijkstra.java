@@ -1,9 +1,9 @@
 package dev.nicotopia.aoc.graphlib;
 
 import java.util.PriorityQueue;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.ObjIntConsumer;
 
 public class Dijkstra {
     /**
@@ -24,23 +24,23 @@ public class Dijkstra {
     * @param start The start node from which the minimum distances to all other nodes will be calculated.
     * @param dds   The Disjkstra data structure
     */
-    public static void run(Node start, DijkstraDataStructure<Node> dds) {
-        Dijkstra.run(dds::getDistance, dds::setDistance, dds::reset, Node::getNeighbour, start);
+    public static <N extends Node<N>> void run(N start, DijkstraDataStructure<N> dds) {
+        Dijkstra.run(dds::getDistance, dds::setDistance, dds::reset, N::getNeighbour, start);
     }
 
     /**
      * Executes the dijkstra algorithm on a given interface.
      * 
      * @param <NodeType>      The type of the abstract graph's nodes.
-     * @param distanceGetter  {@link DisjkstraInterface#getDistance(Object)}
-     * @param distanceSetter  {@link DisjkstraInterface#setDistance(Object, int)}
+     * @param distanceGetter  {@link DijkstraDataStructure#getDistance(Object)}
+     * @param distanceSetter  {@link DijkstraDataStructure#setDistance(Object, int)}
      * @param resetter        {@link BasicGraphInterface#reset()}
      * @param neighbourGetter {@link BasicGraphInterface#getNeighbour(Object, int)}
      * @param start           The start node from which the minimum distances to all
      *                        other nodes will be calculated.
      */
     public static <NodeType> void run(Function<NodeType, Integer> distanceGetter,
-            BiConsumer<NodeType, Integer> distanceSetter, Runnable resetter,
+            ObjIntConsumer<NodeType> distanceSetter, Runnable resetter,
             BiFunction<NodeType, Integer, NodeDistancePair<NodeType>> neighbourGetter, NodeType start) {
         resetter.run();
         PriorityQueue<NodeType> visited = new PriorityQueue<>(

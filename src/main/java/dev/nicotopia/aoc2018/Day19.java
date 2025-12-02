@@ -40,7 +40,6 @@ public class Day19 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.ops.forEach(o -> System.out.println(o.toCLine()));
         this.addTask("Part one", this::partOne);

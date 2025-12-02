@@ -11,7 +11,7 @@ public class AStar {
     * @param asds The A* data structure
     * @return The nearest Node from the start and its total distance to it
     */
-    public static NodeDistancePair<Node> run(Node start, AStarDataStructure<Node> asds) {
+    public static <N extends Node<N>> NodeDistancePair<N> run(N start, AStarDataStructure<N> asds) {
         return AStar.run(Node::getNeighbour, start, asds);
     }
 

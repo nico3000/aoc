@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class Day04 {
-    public record Interval(int beg, int end) {
-    }
+import dev.nicotopia.aoc.algebra.Interval;
 
+public class Day04 {
     public record Guard(int id, Map<String, List<Interval>> sleepIntervals) {
         public Guard(int id) {
             this(id, new HashMap<>());
@@ -30,7 +29,7 @@ public class Day04 {
 
         public int getSleepMinuteCount() {
             return this.sleepIntervals.values().stream()
-                    .mapToInt(intervals -> intervals.stream().mapToInt(i -> i.end - i.beg).sum()).sum();
+                    .mapToInt(intervals -> intervals.stream().mapToInt(i -> i.end() - i.beg()).sum()).sum();
         }
     }
 
@@ -70,7 +69,7 @@ public class Day04 {
     private static SleepyMinute getGuardsMostSleepyMinute(Guard g) {
         int minutes[] = new int[60];
         g.sleepIntervals.values().stream().collect(LinkedList<Interval>::new, LinkedList::addAll, LinkedList::addAll)
-                .stream().forEach(i -> IntStream.range(i.beg, i.end).forEach(j -> ++minutes[j]));
+                .stream().forEach(i -> IntStream.range(i.beg(), i.end()).forEach(j -> ++minutes[j]));
         int maxIdx = 0;
         for (int i = 1; i < minutes.length; ++i) {
             if (minutes[maxIdx] < minutes[i]) {

@@ -67,7 +67,6 @@ public class Day06 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         Pattern p = Pattern.compile("(\\d+), (\\d+)");
         var coords = this.getPrimaryPuzzleInput().stream().map(p::matcher).filter(Matcher::matches)
                 .map(m -> new Coordinate(Integer.valueOf(m.group(1)), Integer.valueOf(m.group(2)))).toList();

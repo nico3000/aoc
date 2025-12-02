@@ -92,7 +92,6 @@ public class Day18 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Part one", () -> this.run(10));
         this.addTask("Part two", () -> this.run(1000000000));
         this.pushPostResultsOption("Show map", () -> {

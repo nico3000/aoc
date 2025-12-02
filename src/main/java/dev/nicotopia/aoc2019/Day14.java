@@ -53,7 +53,6 @@ public class Day14 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Process inpit", this::processInput);
         this.addTask("Part one", () -> this.partOne(1));
         this.addTask("Part two", this::partTwo);

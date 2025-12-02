@@ -25,7 +25,6 @@ public class Day01 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         List<String> lines = this.getPrimaryPuzzleInput();
         String partOneDigits[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
         String partTwoDigits[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five",

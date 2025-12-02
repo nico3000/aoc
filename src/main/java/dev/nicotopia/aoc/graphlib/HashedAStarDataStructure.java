@@ -1,5 +1,6 @@
 package dev.nicotopia.aoc.graphlib;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,5 +52,9 @@ public class HashedAStarDataStructure<NodeType> implements AStarDataStructure<No
     @Override
     public boolean isFinal(NodeType node) {
         return this.isFinal.apply(node);
+    }
+
+    public Map<NodeType, Integer> getFScores() {
+        return Collections.unmodifiableMap(this.fScores);
     }
 }

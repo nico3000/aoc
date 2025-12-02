@@ -33,7 +33,6 @@ public class Day04 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         List<Card> cards = this.addSilentTask("Process input", this::processInput);
         this.addTask("Part one", () -> cards.stream().mapToInt(c -> (1 << c.getNumOwnWinningCards()) / 2).sum());
         this.addTask("Part two", () -> this.partTwo(cards));

@@ -18,7 +18,6 @@ public class Day09 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         List<int[]> histories = this.addSilentTask("Process input", () -> this.getPrimaryPuzzleInput().stream()
                 .map(l -> Arrays.stream(l.split("\\s+")).mapToInt(Integer::valueOf).toArray()).toList());
         BiFunction<int[], Integer, Integer> partOneMerge = (h, e) -> e + h[h.length - 1];

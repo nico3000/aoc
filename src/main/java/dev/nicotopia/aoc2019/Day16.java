@@ -61,7 +61,6 @@ public class Day16 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         int[] signal = this.addSilentTask("Parse input", this::getSignalFromInput);
         this.addTask("Part one", () -> this.partOne(signal, 0));
         if (Dialog.showYesNoWarning("Warning",

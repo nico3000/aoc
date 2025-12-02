@@ -289,7 +289,6 @@ public class Day18 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         char[][] layout = this.getPrimaryPuzzleInputAs2DCharArray();
         this.addTask("Part one", () -> this.partOne(new Vault(layout)));
         this.addTask("Part two", () -> this.partTwo(layout));

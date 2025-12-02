@@ -11,10 +11,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Day22 {
-    private static record Interval(int fromIncl, int toExcl) {
-    }
+import dev.nicotopia.aoc.algebra.Interval;
 
+public class Day22 {
     private static record Region(int inclFromX, int exclToX, int inclFromY, int exclToY, int inclFromZ, int exclToZ) {
         public boolean contains(Region other) {
             return this.inclFromX <= other.inclFromX && other.exclToX <= this.exclToX
@@ -62,8 +61,8 @@ public class Day22 {
                                 default -> throw new RuntimeException();
                             };
                             if (x != 1 || y != 1 || z != 1) {
-                                r.add(new Region(xInt.fromIncl, xInt.toExcl, yInt.fromIncl, yInt.toExcl,
-                                        zInt.fromIncl, zInt.toExcl));
+                                r.add(new Region(xInt.beg(), xInt.end(), yInt.beg(), yInt.end(), zInt.beg(),
+                                        zInt.end()));
                             }
                         }
                     }

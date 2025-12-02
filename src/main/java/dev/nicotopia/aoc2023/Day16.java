@@ -86,7 +86,6 @@ public class Day16 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         List<String> contraption = this.getPrimaryPuzzleInput();
         this.addTask("Part one", () -> this.getNumEnergized(contraption, new LaserTile(0, 0, Compass.E)));
         this.addTask("Part two", () -> this.partTwo(contraption));

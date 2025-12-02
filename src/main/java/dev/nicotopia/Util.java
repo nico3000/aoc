@@ -1,10 +1,15 @@
 package dev.nicotopia;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.LongPredicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Util {
     public static String formatMillis(long millis) {
@@ -143,5 +148,16 @@ public class Util {
             }
         }
         return l;
+    }
+
+    public static boolean checkSafe2D(char input[][], Vec2i p, char c) {
+        return 0 <= p.y() && p.y() < input.length && 0 <= p.x() && p.x() < input[p.y()].length
+                && input[p.y()][p.x()] == c;
+    }
+
+    public static String md5(String source) throws NoSuchAlgorithmException {
+        byte digest[] = MessageDigest.getInstance("MD5").digest(source.getBytes());
+        return IntStream.range(0, digest.length).collect(StringBuilder::new,
+                (sb, i) -> sb.append(String.format("%02x", digest[i])), StringBuilder::append).toString();
     }
 }

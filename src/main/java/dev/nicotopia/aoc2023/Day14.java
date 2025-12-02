@@ -132,7 +132,6 @@ public class Day14 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Part one", () -> {
             Dish dish = new Dish();
             dish.tiltNorth();

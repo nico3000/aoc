@@ -211,7 +211,6 @@ public class Day15 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Part one", () -> this.fight(() -> false).getAsInt());
         this.addTask("Part two", this::partTwo);
     }

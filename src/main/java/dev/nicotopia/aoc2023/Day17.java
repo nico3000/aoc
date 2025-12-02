@@ -104,7 +104,6 @@ public class Day17 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.map = this.addSilentTask("Process input", () -> this.getPrimaryPuzzleInput().stream()
                 .map(l -> l.chars().map(c -> c - '0').toArray()).toArray(int[][]::new));
         Vec2i dest = new Vec2i(map[map.length - 1].length - 1, map.length - 1);

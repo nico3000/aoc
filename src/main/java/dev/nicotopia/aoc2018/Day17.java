@@ -120,7 +120,6 @@ public class Day17 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
         this.addTask("Part two", Arrays.stream(this.map).map(Arrays::stream).flatMap(s -> s)

@@ -2,7 +2,7 @@ package dev.nicotopia.aoc2015;
 
 import java.security.NoSuchAlgorithmException;
 
-import dev.nicotopia.Hasher;
+import dev.nicotopia.Util;
 
 public class Day04 {
     public static void main(String[] args) throws NoSuchAlgorithmException {
@@ -10,7 +10,7 @@ public class Day04 {
         Integer idx1 = null;
         int idx2;
         for (int i = 0; true; ++i) {
-            String hash = Hasher.md5(input + i);
+            String hash = Util.md5(input + i);
             if (hash.startsWith("00000")) {
                 if (idx1 == null) {
                     idx1 = i;

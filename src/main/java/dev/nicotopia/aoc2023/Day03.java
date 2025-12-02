@@ -58,7 +58,6 @@ public class Day03 extends DayBase {
 
     @Override
     public void run() {
-        this.addDefaultExamplePresets();
         this.lines = this.getPrimaryPuzzleInput();
         this.addTask("Process input", this::processInput);
         this.addTask("Part one", this::partOne);
