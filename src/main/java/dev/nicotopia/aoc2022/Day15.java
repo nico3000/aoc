@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.nicotopia.aoc.algebra.Interval;
+import dev.nicotopia.aoc.algebra.IntInterval;
 import dev.nicotopia.aoc.algebra.IntervalSet;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
@@ -43,10 +43,10 @@ public class Day15 {
         }
     }
 
-    private static void collectNoBeaconIntervals(Map<Vec2i, Vec2i> sensors, int y, Consumer<Interval> collector) {
+    private static void collectNoBeaconIntervals(Map<Vec2i, Vec2i> sensors, int y, Consumer<IntInterval> collector) {
         sensors.forEach((s, b) -> {
             int maxDeltaX = s.manhattanDistanceTo(b) - Math.abs(y - s.y());
-            Optional.of(new Interval(s.x() - maxDeltaX, s.x() + maxDeltaX + 1)).ifPresent(collector);
+            Optional.of(new IntInterval(s.x() - maxDeltaX, s.x() + maxDeltaX + 1)).ifPresent(collector);
         });
     }
 }

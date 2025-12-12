@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.aoc.algebra.Interval;
+import dev.nicotopia.aoc.algebra.IntInterval;
 
 public class Day04 {
-    public record Guard(int id, Map<String, List<Interval>> sleepIntervals) {
+    public record Guard(int id, Map<String, List<IntInterval>> sleepIntervals) {
         public Guard(int id) {
             this(id, new HashMap<>());
         }
 
-        public void addSleepInterval(String date, Interval interval) {
-            List<Interval> intervals = this.sleepIntervals.get(date);
+        public void addSleepInterval(String date, IntInterval interval) {
+            List<IntInterval> intervals = this.sleepIntervals.get(date);
             if (intervals == null) {
                 this.sleepIntervals.put(date, intervals = new LinkedList<>());
             }
@@ -51,7 +51,7 @@ public class Day04 {
             }
             while (lineIt.hasNext() && !(line = lineIt.next()).endsWith(" begins shift")) {
                 String endLine = lineIt.next();
-                g.addSleepInterval(endLine.substring(1, 11), new Interval(Integer.valueOf(line.substring(15, 17)),
+                g.addSleepInterval(endLine.substring(1, 11), new IntInterval(Integer.valueOf(line.substring(15, 17)),
                         Integer.valueOf(endLine.substring(15, 17))));
             }
         }
@@ -68,7 +68,7 @@ public class Day04 {
 
     private static SleepyMinute getGuardsMostSleepyMinute(Guard g) {
         int minutes[] = new int[60];
-        g.sleepIntervals.values().stream().collect(LinkedList<Interval>::new, LinkedList::addAll, LinkedList::addAll)
+        g.sleepIntervals.values().stream().collect(LinkedList<IntInterval>::new, LinkedList::addAll, LinkedList::addAll)
                 .stream().forEach(i -> IntStream.range(i.beg(), i.end()).forEach(j -> ++minutes[j]));
         int maxIdx = 0;
         for (int i = 1; i < minutes.length; ++i) {

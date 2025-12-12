@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.CharMap2D;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.algebra.Vec2i;
@@ -27,7 +27,7 @@ public class Day10 extends DayBase {
             if (currentValue == '9') {
                 tops.put(currentPos, tops.getOrDefault(currentPos, 0) + 1);
             } else {
-                Arrays.stream(Compass.values()).map(currentPos::getNeighbour)
+                Arrays.stream(Compass4.values()).map(currentPos::getNeighbour)
                         .filter(n -> this.map.applies(n, v -> currentValue + 1 == v)).forEach(stack::push);
             }
         }

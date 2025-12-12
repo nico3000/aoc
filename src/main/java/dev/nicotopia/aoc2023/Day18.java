@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day18 extends DayBase {
-    private record Edge(int x, int y, Compass dir, int length) {
+    private record Edge(int x, int y, Compass4 dir, int length) {
         public Vec2i getEnd() {
             return switch (this.dir) {
                 case N -> new Vec2i(this.x, this.y - this.length);
@@ -32,15 +32,15 @@ public class Day18 extends DayBase {
             if (this.getStartX() != other.getStartX()) {
                 return Integer.compare(this.getStartX(), other.getStartX());
             }
-            return this.dir == Compass.N || this.dir == Compass.S ? -1 : 1;
+            return this.dir == Compass4.N || this.dir == Compass4.S ? -1 : 1;
         }
 
         public int getStartX() {
-            return this.dir == Compass.W ? this.x - this.length : this.x;
+            return this.dir == Compass4.W ? this.x - this.length : this.x;
         }
 
         public boolean isVertical() {
-            return this.dir == Compass.N || this.dir == Compass.S;
+            return this.dir == Compass4.N || this.dir == Compass4.S;
         }
     }
 
@@ -50,10 +50,10 @@ public class Day18 extends DayBase {
         for (String line : instructions) {
             String split[] = line.split("\\s+");
             Edge edge = new Edge(p.x(), p.y(), switch (split[0].charAt(0)) {
-                case 'U' -> Compass.N;
-                case 'R' -> Compass.E;
-                case 'D' -> Compass.S;
-                case 'L' -> Compass.W;
+                case 'U' -> Compass4.N;
+                case 'R' -> Compass4.E;
+                case 'D' -> Compass4.S;
+                case 'L' -> Compass4.W;
                 default -> throw new AocException("Illegal direction: %s", line);
             }, Integer.valueOf(split[1]));
             edges.add(edge);

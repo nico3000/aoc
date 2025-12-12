@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
 public class Day16 extends DayBase {
-    private record LaserTile(int x, int y, Compass d) {
+    private record LaserTile(int x, int y, Compass4 d) {
     }
 
-    private LaserTile move(int posX, int posY, Compass dir) {
+    private LaserTile move(int posX, int posY, Compass4 dir) {
         return switch (dir) {
             case N -> new LaserTile(posX, posY - 1, dir);
             case E -> new LaserTile(posX + 1, posY, dir);
@@ -27,28 +27,28 @@ public class Day16 extends DayBase {
         switch (contraption.get(current.y).charAt(current.x)) {
             case '/':
                 return this.move(current.x, current.y, switch (current.d) {
-                    case N -> Compass.E;
-                    case E -> Compass.N;
-                    case S -> Compass.W;
-                    case W -> Compass.S;
+                    case N -> Compass4.E;
+                    case E -> Compass4.N;
+                    case S -> Compass4.W;
+                    case W -> Compass4.S;
                 });
             case '\\':
                 return this.move(current.x, current.y, switch (current.d) {
-                    case N -> Compass.W;
-                    case E -> Compass.S;
-                    case S -> Compass.E;
-                    case W -> Compass.N;
+                    case N -> Compass4.W;
+                    case E -> Compass4.S;
+                    case S -> Compass4.E;
+                    case W -> Compass4.N;
                 });
             case '-':
-                if (current.d == Compass.N || current.d == Compass.S) {
-                    stack.push(new LaserTile(current.x - 1, current.y, Compass.W));
-                    return new LaserTile(current.x + 1, current.y, Compass.E);
+                if (current.d == Compass4.N || current.d == Compass4.S) {
+                    stack.push(new LaserTile(current.x - 1, current.y, Compass4.W));
+                    return new LaserTile(current.x + 1, current.y, Compass4.E);
                 }
                 break;
             case '|':
-                if (current.d == Compass.E || current.d == Compass.W) {
-                    stack.push(new LaserTile(current.x, current.y - 1, Compass.N));
-                    return new LaserTile(current.x, current.y + 1, Compass.S);
+                if (current.d == Compass4.E || current.d == Compass4.W) {
+                    stack.push(new LaserTile(current.x, current.y - 1, Compass4.N));
+                    return new LaserTile(current.x, current.y + 1, Compass4.S);
                 }
                 break;
         }
@@ -71,7 +71,7 @@ public class Day16 extends DayBase {
 
     private int partTwo(List<String> contraption) {
         List<LaserTile> startingStates = new ArrayList<>();
-        for (Compass d : Compass.values()) {
+        for (Compass4 d : Compass4.values()) {
             for (int x = 0; x < contraption.getFirst().length(); ++x) {
                 startingStates.add(new LaserTile(x, 0, d));
                 startingStates.add(new LaserTile(x, contraption.size() - 1, d));
@@ -87,7 +87,7 @@ public class Day16 extends DayBase {
     @Override
     public void run() {
         List<String> contraption = this.getPrimaryPuzzleInput();
-        this.addTask("Part one", () -> this.getNumEnergized(contraption, new LaserTile(0, 0, Compass.E)));
+        this.addTask("Part one", () -> this.getNumEnergized(contraption, new LaserTile(0, 0, Compass4.E)));
         this.addTask("Part two", () -> this.partTwo(contraption));
     }
 }

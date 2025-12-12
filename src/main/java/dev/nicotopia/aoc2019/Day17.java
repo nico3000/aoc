@@ -8,7 +8,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.Dialog;
@@ -18,7 +18,7 @@ public class Day17 extends DayBase {
     private class Robot {
         private Arena arena;
         private Vec2i pos;
-        private Compass dir;
+        private Compass4 dir;
 
         private Robot() {
         }
@@ -32,10 +32,10 @@ public class Day17 extends DayBase {
             }
             this.pos = optPos.get();
             this.dir = switch (this.arena.get(this.pos)) {
-                case '^' -> Compass.N;
-                case '>' -> Compass.E;
-                case 'v' -> Compass.S;
-                case '<' -> Compass.W;
+                case '^' -> Compass4.N;
+                case '>' -> Compass4.E;
+                case 'v' -> Compass4.S;
+                case '<' -> Compass4.W;
                 default -> throw new RuntimeException("Illegal char");
             };
         }
@@ -51,20 +51,20 @@ public class Day17 extends DayBase {
 
         public Robot left() {
             this.dir = switch (this.dir) {
-                case Compass.N -> Compass.W;
-                case Compass.E -> Compass.N;
-                case Compass.S -> Compass.E;
-                case Compass.W -> Compass.S;
+                case Compass4.N -> Compass4.W;
+                case Compass4.E -> Compass4.N;
+                case Compass4.S -> Compass4.E;
+                case Compass4.W -> Compass4.S;
             };
             return this;
         }
 
         public Robot right() {
             this.dir = switch (this.dir) {
-                case Compass.N -> Compass.E;
-                case Compass.E -> Compass.S;
-                case Compass.S -> Compass.W;
-                case Compass.W -> Compass.N;
+                case Compass4.N -> Compass4.E;
+                case Compass4.E -> Compass4.S;
+                case Compass4.S -> Compass4.W;
+                case Compass4.W -> Compass4.N;
             };
             return this;
         }
@@ -120,10 +120,10 @@ public class Day17 extends DayBase {
 
         private Vec2i getForwardPos() {
             return switch (this.dir) {
-                case Compass.N -> new Vec2i(this.pos.x(), this.pos.y() - 1);
-                case Compass.E -> new Vec2i(this.pos.x() + 1, this.pos.y());
-                case Compass.S -> new Vec2i(this.pos.x(), this.pos.y() + 1);
-                case Compass.W -> new Vec2i(this.pos.x() - 1, this.pos.y());
+                case Compass4.N -> new Vec2i(this.pos.x(), this.pos.y() - 1);
+                case Compass4.E -> new Vec2i(this.pos.x() + 1, this.pos.y());
+                case Compass4.S -> new Vec2i(this.pos.x(), this.pos.y() + 1);
+                case Compass4.W -> new Vec2i(this.pos.x() - 1, this.pos.y());
             };
         }
     }

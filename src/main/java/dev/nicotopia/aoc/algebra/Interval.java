@@ -1,21 +1,15 @@
 package dev.nicotopia.aoc.algebra;
 
-import java.util.stream.IntStream;
+import java.util.Optional;
 
-public record Interval(int beg, int end) {
-    public boolean contains(int i) {
-        return this.beg <= i && i < this.end;
-    }
+public interface Interval<E extends Interval<E>> {
+    public boolean isEmpty();
 
-    public boolean isDisjunctTo(Interval other) {
-        return this.end <= other.beg || other.end <= this.beg;
-    }
+    public boolean contains(E other);
 
-    public boolean isEmpty() {
-        return this.end <= this.beg;
-    }
+    public boolean isDisjoint(E other);
 
-    public IntStream stream() {
-        return IntStream.range(this.beg, this.end);
-    }
+    public Optional<E> tryMerge(E other);
+
+    public Optional<E> tryRemove(E other);
 }

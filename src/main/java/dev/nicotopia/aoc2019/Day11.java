@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.Dialog;
@@ -15,7 +15,7 @@ public class Day11 extends DayBase {
     private final Set<Vec2i> whitePanels = new HashSet<>();
     private final Set<Vec2i> paintedPanels = new HashSet<>();
     private Vec2i robotPos;
-    private Compass robotDir;
+    private Compass4 robotDir;
     private int numProcessedValues;
 
     private void process(long v) {
@@ -29,16 +29,16 @@ public class Day11 extends DayBase {
         } else {
             this.robotDir = switch ((int) v) {
                 case 0 -> switch (this.robotDir) {
-                    case N -> Compass.W;
-                    case E -> Compass.N;
-                    case S -> Compass.E;
-                    case W -> Compass.S;
+                    case N -> Compass4.W;
+                    case E -> Compass4.N;
+                    case S -> Compass4.E;
+                    case W -> Compass4.S;
                 };
                 case 1 -> switch (this.robotDir) {
-                    case N -> Compass.E;
-                    case E -> Compass.S;
-                    case S -> Compass.W;
-                    case W -> Compass.N;
+                    case N -> Compass4.E;
+                    case E -> Compass4.S;
+                    case S -> Compass4.W;
+                    case W -> Compass4.N;
                 };
                 default -> throw new AocException("Unexpected value: " + v);
             };
@@ -55,7 +55,7 @@ public class Day11 extends DayBase {
         this.whitePanels.clear();
         this.paintedPanels.clear();
         this.robotPos = Vec2i.ORIGIN;
-        this.robotDir = Compass.N;
+        this.robotDir = Compass4.N;
         this.numProcessedValues = 0;
         if (startOnWhitePanel) {
             this.whitePanels.add(this.robotPos);

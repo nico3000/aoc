@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.CharMap2D;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.algebra.Vec2i;
@@ -19,9 +19,9 @@ import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 public class Day16 extends DayBase {
     private class CharMap2DNode implements Node<CharMap2DNode> {
         private final Vec2i pos;
-        private final Compass dir;
+        private final Compass4 dir;
 
-        public CharMap2DNode(Vec2i pos, Compass dir) {
+        public CharMap2DNode(Vec2i pos, Compass4 dir) {
             this.pos = pos;
             this.dir = dir;
         }
@@ -30,17 +30,17 @@ public class Day16 extends DayBase {
         public NodeDistancePair<CharMap2DNode> getNeighbour(int idx) {
             if (idx == 0) {
                 return new NodeDistancePair<>(new CharMap2DNode(this.pos, switch (this.dir) {
-                    case N -> Compass.E;
-                    case E -> Compass.S;
-                    case S -> Compass.W;
-                    case W -> Compass.N;
+                    case N -> Compass4.E;
+                    case E -> Compass4.S;
+                    case S -> Compass4.W;
+                    case W -> Compass4.N;
                 }), 1000);
             } else if (idx == 1) {
                 return new NodeDistancePair<>(new CharMap2DNode(this.pos, switch (this.dir) {
-                    case N -> Compass.W;
-                    case E -> Compass.N;
-                    case S -> Compass.E;
-                    case W -> Compass.S;
+                    case N -> Compass4.W;
+                    case E -> Compass4.N;
+                    case S -> Compass4.E;
+                    case W -> Compass4.S;
                 }), 1000);
             } else if (idx == 2 && Day16.this.map.get(this.pos.getNeighbour(this.dir)) != '#') {
                 return new NodeDistancePair<>(new CharMap2DNode(this.pos.getNeighbour(this.dir), this.dir), 1);
@@ -64,10 +64,10 @@ public class Day16 extends DayBase {
     private final HashedDijkstraDataStructure<CharMap2DNode> dds = new HashedDijkstraDataStructure<>();
 
     private int partOne() {
-        CharMap2DNode startNode = new CharMap2DNode(this.map.findAnyPositionOf('S').get(), Compass.E);
+        CharMap2DNode startNode = new CharMap2DNode(this.map.findAnyPositionOf('S').get(), Compass4.E);
         Dijkstra.run(startNode, this.dds);
         Vec2i end = this.map.findAnyPositionOf('E').get();
-        return Stream.of(Compass.values()).map(d -> new CharMap2DNode(end, d)).map(this.dds::getDistance)
+        return Stream.of(Compass4.values()).map(d -> new CharMap2DNode(end, d)).map(this.dds::getDistance)
                 .mapToInt(Integer::valueOf).min().getAsInt();
     }
 

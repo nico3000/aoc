@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.Pair;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.Dialog;
@@ -26,13 +26,13 @@ public class Day15 extends DayBase {
     private NodeDistancePair<Vec2i> getNeighbour(Vec2i pos, int i) {
         if (4 <= i) {
             return null;
-        } else if (this.isEmpty(pos, Compass.N) && i-- == 0) {
+        } else if (this.isEmpty(pos, Compass4.N) && i-- == 0) {
             return new NodeDistancePair<>(new Vec2i(pos.x(), pos.y() - 1), 1);
-        } else if (this.isEmpty(pos, Compass.E) && i-- == 0) {
+        } else if (this.isEmpty(pos, Compass4.E) && i-- == 0) {
             return new NodeDistancePair<>(new Vec2i(pos.x() + 1, pos.y()), 1);
-        } else if (this.isEmpty(pos, Compass.S) && i-- == 0) {
+        } else if (this.isEmpty(pos, Compass4.S) && i-- == 0) {
             return new NodeDistancePair<>(new Vec2i(pos.x(), pos.y() + 1), 1);
-        } else if (this.isEmpty(pos, Compass.W) && i-- == 0) {
+        } else if (this.isEmpty(pos, Compass4.W) && i-- == 0) {
             return new NodeDistancePair<>(new Vec2i(pos.x() - 1, pos.y()), 1);
         } else {
             return null;
@@ -43,7 +43,7 @@ public class Day15 extends DayBase {
         this.machine = new IntcodeMachine(this.getPrimaryPuzzleInput().getFirst());
     }
 
-    private boolean isEmpty(Vec2i base, Compass dir) {
+    private boolean isEmpty(Vec2i base, Compass4 dir) {
         var p = this.map.get(base);
         Vec2i dstPos = switch (dir) {
             case N -> new Vec2i(base.x(), base.y() - 1);

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.Compass8;
 import dev.nicotopia.Pair;
 
@@ -83,11 +83,11 @@ public record Vec2i(int x, int y) {
         return Stream.of(positions);
     }
 
-    public Vec2i getNeighbour(Compass dir) {
+    public Vec2i getNeighbour(Compass4 dir) {
         return this.getNeighbour(dir, 1);
     }
 
-    public Vec2i getNeighbour(Compass dir, int numSteps) {
+    public Vec2i getNeighbour(Compass4 dir, int numSteps) {
         return switch (dir) {
             case N -> new Vec2i(x, y - numSteps);
             case E -> new Vec2i(x + numSteps, y);
@@ -110,7 +110,7 @@ public record Vec2i(int x, int y) {
     }
 
     public Stream<Vec2i> neighbours4() {
-        return Stream.of(Compass.values()).map(this::getNeighbour);
+        return Stream.of(Compass4.values()).map(this::getNeighbour);
     }
 
     public Stream<Vec2i> neighbours8() {

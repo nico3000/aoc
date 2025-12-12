@@ -87,7 +87,7 @@ public class Day23 extends DayBase {
                 this.nanobots.stream().mapToInt(n -> n.pos.y() - n.range).max().getAsInt(),
                 this.nanobots.stream().mapToInt(n -> n.pos.z() - n.range).max().getAsInt());
         int initialCubeSize = 2 * Integer.highestOneBit(Util.largestOf(max.x() - min.x(), max.y() - min.y(),
-                max.z() - min.z()) + 1);
+                max.z() - min.z()).getAsInt() + 1);
         PriorityQueue<Pair<Cube, Integer>> queue = new PriorityQueue<>(
                 (a, b) -> Integer.compare(b.second(), a.second()));
         queue.offer(new Pair<>(new Cube(min, initialCubeSize), this.nanobots.size()));

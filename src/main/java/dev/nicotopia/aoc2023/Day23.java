@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.Pair;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
@@ -66,11 +66,11 @@ public class Day23 extends DayBase {
         this.end = new Node(String.valueOf(map[map.length - 1]).indexOf('.'), map.length - 1);
         nodeMap.put(this.start.pos, this.start);
         nodeMap.put(this.end.pos, this.end);
-        Stack<Pair<Node, Compass>> stack = new Stack<>();
-        stack.add(new Pair<>(start, Compass.S));
+        Stack<Pair<Node, Compass4>> stack = new Stack<>();
+        stack.add(new Pair<>(start, Compass4.S));
         while (!stack.isEmpty()) {
-            Pair<Node, Compass> origin = stack.pop();
-            Compass dir = origin.second();
+            Pair<Node, Compass4> origin = stack.pop();
+            Compass4 dir = origin.second();
             Vec2i p = new Vec2i(origin.first().pos.x() + switch (dir) {
                 case E -> 1;
                 case W -> -1;
@@ -89,30 +89,30 @@ public class Day23 extends DayBase {
                     nodeMap.put(p, c);
                     origin.first().neighbours.put(c, i);
                     if (map[p.y() - 1][p.x()] == '^') {
-                        stack.push(new Pair<>(c, Compass.N));
+                        stack.push(new Pair<>(c, Compass4.N));
                     }
                     if (map[p.y()][p.x() + 1] == '>') {
-                        stack.push(new Pair<>(c, Compass.E));
+                        stack.push(new Pair<>(c, Compass4.E));
                     }
                     if (map[p.y() + 1][p.x()] == 'v') {
-                        stack.push(new Pair<>(c, Compass.S));
+                        stack.push(new Pair<>(c, Compass4.S));
                     }
                     if (map[p.y()][p.x() - 1] == '<') {
-                        stack.push(new Pair<>(c, Compass.W));
+                        stack.push(new Pair<>(c, Compass4.W));
                     }
                     break;
-                } else if (dir != Compass.S && map[p.y() - 1][p.x()] != '#') {
+                } else if (dir != Compass4.S && map[p.y() - 1][p.x()] != '#') {
                     p = new Vec2i(p.x(), p.y() - 1);
-                    dir = Compass.N;
-                } else if (dir != Compass.W && map[p.y()][p.x() + 1] != '#') {
+                    dir = Compass4.N;
+                } else if (dir != Compass4.W && map[p.y()][p.x() + 1] != '#') {
                     p = new Vec2i(p.x() + 1, p.y());
-                    dir = Compass.E;
-                } else if (dir != Compass.N && map[p.y() + 1][p.x()] != '#') {
+                    dir = Compass4.E;
+                } else if (dir != Compass4.N && map[p.y() + 1][p.x()] != '#') {
                     p = new Vec2i(p.x(), p.y() + 1);
-                    dir = Compass.S;
-                } else if (dir != Compass.E && map[p.y()][p.x() - 1] != '#') {
+                    dir = Compass4.S;
+                } else if (dir != Compass4.E && map[p.y()][p.x() - 1] != '#') {
                     p = new Vec2i(p.x() - 1, p.y());
-                    dir = Compass.W;
+                    dir = Compass4.W;
                 } else {
                     break;
                 }

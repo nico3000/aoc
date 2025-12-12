@@ -9,7 +9,7 @@ import java.util.Stack;
 import dev.nicotopia.Pair;
 import dev.nicotopia.aoc.CharMap2D;
 import dev.nicotopia.aoc.DayBase;
-import dev.nicotopia.aoc.algebra.Interval;
+import dev.nicotopia.aoc.algebra.IntInterval;
 import dev.nicotopia.aoc.algebra.IntervalSet;
 import dev.nicotopia.aoc.algebra.Vec2i;
 
@@ -51,10 +51,10 @@ public class Day12 extends DayBase {
                     Vec2i left = new Vec2i(x - 1, y);
                     Vec2i right = new Vec2i(x, y);
                     if (!this.tiles.contains(left) || this.tiles.contains(right)) {
-                        scanlineA.remove(new Interval(y, y + 1));
+                        scanlineA.remove(new IntInterval(y, y + 1));
                     }
                     if (!this.tiles.contains(right) || this.tiles.contains(left)) {
-                        scanlineB.remove(new Interval(y, y + 1));
+                        scanlineB.remove(new IntInterval(y, y + 1));
                     }
                 }
                 numSides += scanlineA.getNumIntervals() + scanlineB.getNumIntervals();
@@ -66,10 +66,10 @@ public class Day12 extends DayBase {
                     Vec2i top = new Vec2i(x, y - 1);
                     Vec2i bottom = new Vec2i(x, y);
                     if (!this.tiles.contains(top) || this.tiles.contains(bottom)) {
-                        scanlineA.remove(new Interval(x, x + 1));
+                        scanlineA.remove(new IntInterval(x, x + 1));
                     }
                     if (!this.tiles.contains(bottom) || this.tiles.contains(top)) {
-                        scanlineB.remove(new Interval(x, x + 1));
+                        scanlineB.remove(new IntInterval(x, x + 1));
                     }
                 }
                 numSides += scanlineA.getNumIntervals() + scanlineB.getNumIntervals();

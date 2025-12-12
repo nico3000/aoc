@@ -3,7 +3,7 @@ package dev.nicotopia.aoc2024;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.CharMap2D;
 import dev.nicotopia.aoc.DayBase;
@@ -43,7 +43,7 @@ public class Day15 extends DayBase {
         this.commands = input.subList(splitIndex + 1, input.size()).stream().collect(Collectors.joining());
     }
 
-    private boolean isMoveable(Vec2i from, Compass dir) {
+    private boolean isMoveable(Vec2i from, Compass4 dir) {
         if (this.map.is(from, '.')) {
             return true;
         }
@@ -51,32 +51,32 @@ public class Day15 extends DayBase {
         if (this.map.is(from, 'O') && this.isMoveable(to, dir)) {
             return true;
         } else if (this.map.is(from, '[')) {
-            if (dir == Compass.E || dir == Compass.W) {
+            if (dir == Compass4.E || dir == Compass4.W) {
                 return this.isMoveable(to, dir);
             } else {
-                return this.isMoveable(to, dir) && this.isMoveable(to.getNeighbour(Compass.E), dir);
+                return this.isMoveable(to, dir) && this.isMoveable(to.getNeighbour(Compass4.E), dir);
             }
         } else if (this.map.is(from, ']')) {
-            if (dir == Compass.E || dir == Compass.W) {
+            if (dir == Compass4.E || dir == Compass4.W) {
                 return this.isMoveable(to, dir);
             } else {
-                return this.isMoveable(to, dir) && this.isMoveable(to.getNeighbour(Compass.W), dir);
+                return this.isMoveable(to, dir) && this.isMoveable(to.getNeighbour(Compass4.W), dir);
             }
         }
         return false;
     }
 
-    private void move(Vec2i from, Compass dir) {
+    private void move(Vec2i from, Compass4 dir) {
         if (!this.map.is(from, '.')) {
             Vec2i to = from.getNeighbour(dir);
             this.move(to, dir);
             this.map.set(to, this.map.get(from));
             this.map.set(from, '.');
-            if (dir == Compass.N || dir == Compass.S) {
+            if (dir == Compass4.N || dir == Compass4.S) {
                 if (this.map.is(to, '[')) {
-                    this.move(from.getNeighbour(Compass.E), dir);
+                    this.move(from.getNeighbour(Compass4.E), dir);
                 } else if (this.map.is(to, ']')) {
-                    this.move(from.getNeighbour(Compass.W), dir);
+                    this.move(from.getNeighbour(Compass4.W), dir);
                 }
             }
         }
@@ -86,11 +86,11 @@ public class Day15 extends DayBase {
         Vec2i pos = this.map.findAnyPositionOf('@').get();
         this.map.set(pos, '.');
         for (char c : this.commands.toCharArray()) {
-            Compass dir = switch (c) {
-                case '^' -> Compass.N;
-                case '>' -> Compass.E;
-                case 'v' -> Compass.S;
-                case '<' -> Compass.W;
+            Compass4 dir = switch (c) {
+                case '^' -> Compass4.N;
+                case '>' -> Compass4.E;
+                case 'v' -> Compass4.S;
+                case '<' -> Compass4.W;
                 default -> throw new AocException("malformed input");
             };
             Vec2i next = pos.getNeighbour(dir);

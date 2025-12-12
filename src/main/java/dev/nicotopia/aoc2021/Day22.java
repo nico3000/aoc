@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.nicotopia.aoc.algebra.Interval;
+import dev.nicotopia.aoc.algebra.IntInterval;
 
 public class Day22 {
     private static record Region(int inclFromX, int exclToX, int inclFromY, int exclToY, int inclFromZ, int exclToZ) {
@@ -40,24 +40,24 @@ public class Day22 {
             } else if (!other.contains(this)) {
                 Region o = this.conjunct(other);
                 for (int z = 0; z < 3; ++z) {
-                    Interval zInt = switch (z) {
-                        case 0 -> new Interval(this.inclFromZ, o.inclFromZ);
-                        case 1 -> new Interval(o.inclFromZ, o.exclToZ);
-                        case 2 -> new Interval(o.exclToZ, this.exclToZ);
+                    IntInterval zInt = switch (z) {
+                        case 0 -> new IntInterval(this.inclFromZ, o.inclFromZ);
+                        case 1 -> new IntInterval(o.inclFromZ, o.exclToZ);
+                        case 2 -> new IntInterval(o.exclToZ, this.exclToZ);
                         default -> throw new RuntimeException();
                     };
                     for (int y = 0; y < 3; ++y) {
-                        Interval yInt = switch (y) {
-                            case 0 -> new Interval(this.inclFromY, o.inclFromY);
-                            case 1 -> new Interval(o.inclFromY, o.exclToY);
-                            case 2 -> new Interval(o.exclToY, this.exclToY);
+                        IntInterval yInt = switch (y) {
+                            case 0 -> new IntInterval(this.inclFromY, o.inclFromY);
+                            case 1 -> new IntInterval(o.inclFromY, o.exclToY);
+                            case 2 -> new IntInterval(o.exclToY, this.exclToY);
                             default -> throw new RuntimeException();
                         };
                         for (int x = 0; x < 3; ++x) {
-                            Interval xInt = switch (x) {
-                                case 0 -> new Interval(this.inclFromX, o.inclFromX);
-                                case 1 -> new Interval(o.inclFromX, o.exclToX);
-                                case 2 -> new Interval(o.exclToX, this.exclToX);
+                            IntInterval xInt = switch (x) {
+                                case 0 -> new IntInterval(this.inclFromX, o.inclFromX);
+                                case 1 -> new IntInterval(o.inclFromX, o.exclToX);
+                                case 2 -> new IntInterval(o.exclToX, this.exclToX);
                                 default -> throw new RuntimeException();
                             };
                             if (x != 1 || y != 1 || z != 1) {

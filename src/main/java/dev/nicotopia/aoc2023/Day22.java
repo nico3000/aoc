@@ -30,7 +30,7 @@ public class Day22 extends DayBase {
         public Brick(int ax, int ay, int az, int bx, int by, int bz) {
             this.p = new Vec3i(Math.min(ax, bx), Math.min(ay, by), Math.min(az, bz));
             this.orientation = ax != bx ? Axis3D.X : ay != by ? Axis3D.Y : Axis3D.Z;
-            this.length = 1 + Util.largestOf(Math.abs(ax - bx), Math.abs(ay - by), Math.abs(az - bz));
+            this.length = 1 + Util.largestOf(Math.abs(ax - bx), Math.abs(ay - by), Math.abs(az - bz)).getAsInt();
         }
 
         public boolean anyBlockMatch(BlockPredicate pred) {

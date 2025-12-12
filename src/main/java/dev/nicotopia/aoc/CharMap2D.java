@@ -3,6 +3,7 @@ package dev.nicotopia.aoc;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ObjIntConsumer;
@@ -10,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.algebra.Vec2i;
 import dev.nicotopia.aoc.graphlib.Dijkstra;
 import dev.nicotopia.aoc.graphlib.NodeDistancePair;
@@ -74,6 +75,22 @@ public class CharMap2D {
         return Vec2i.streamCoordinatesFor(this.map).filter(p -> filter.test(p, this.get(p)));
     }
 
+    public int update(BiFunction<Vec2i, Character, Character> updateFn, boolean recursive) {
+        for (int count = 0, delta = 0;; count += delta) {
+            delta = (int) this.coordinates().filter(p -> {
+                Character newValue = updateFn.apply(p, this.get(p));
+                if (newValue != null && newValue != this.get(p)) {
+                    this.set(p, newValue);
+                    return true;
+                }
+                return false;
+            }).count();
+            if (!recursive || delta == 0) {
+                return count + delta;
+            }
+        }
+    }
+
     public OptionalInt getShortestDistance(Vec2i from, Vec2i to, char accessible) {
         return this.getShortestDistances(from, accessible)[to.y()][to.x()];
     }
@@ -90,7 +107,7 @@ public class CharMap2D {
                 : null;
         ObjIntConsumer<Vec2i> distanceSetter = (p, d) -> distances[p.y()][p.x()] = OptionalInt.of(d);
         Dijkstra.run(distanceGetter, distanceSetter, reset, (p, idx) -> {
-            for (Compass c : Compass.values()) {
+            for (Compass4 c : Compass4.values()) {
                 if (this.is(p.getNeighbour(c), accessible) && idx-- == 0) {
                     return new NodeDistancePair<Vec2i>(p.getNeighbour(c), 1);
                 }

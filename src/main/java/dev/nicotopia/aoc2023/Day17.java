@@ -1,8 +1,8 @@
 package dev.nicotopia.aoc2023;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
-import dev.nicotopia.Compass;
+import dev.nicotopia.Compass4;
 import dev.nicotopia.aoc.AocException;
 import dev.nicotopia.aoc.DayBase;
 import dev.nicotopia.aoc.algebra.Vec2i;
@@ -12,8 +12,8 @@ import dev.nicotopia.aoc.graphlib.HashedAStarDataStructure;
 import dev.nicotopia.aoc.graphlib.NodeDistancePair;
 
 public class Day17 extends DayBase {
-    private record Node(Vec2i pos, Compass lastDir, int lastDirCount) {
-        public Node move(Compass dir) {
+    private record Node(Vec2i pos, Compass4 lastDir, int lastDirCount) {
+        public Node move(Compass4 dir) {
             return new Node(switch (dir) {
                 case N -> new Vec2i(this.pos.x(), this.pos.y() - 1);
                 case E -> new Vec2i(this.pos.x() + 1, this.pos.y());
@@ -40,19 +40,21 @@ public class Day17 extends DayBase {
         }
         int x = node.pos.x();
         int y = node.pos.y();
-        if (y != 0 && (node.lastDir != Compass.N || node.lastDirCount != 3) && node.lastDir != Compass.S && i-- == 0) {
-            return new NodeDistancePair<>(node.move(Compass.N), this.map[y - 1][x]);
+        if (y != 0 && (node.lastDir != Compass4.N || node.lastDirCount != 3) && node.lastDir != Compass4.S
+                && i-- == 0) {
+            return new NodeDistancePair<>(node.move(Compass4.N), this.map[y - 1][x]);
         }
-        if (x != this.map[y].length - 1 && (node.lastDir != Compass.E || node.lastDirCount != 3)
-                && node.lastDir != Compass.W && i-- == 0) {
-            return new NodeDistancePair<>(node.move(Compass.E), this.map[y][x + 1]);
+        if (x != this.map[y].length - 1 && (node.lastDir != Compass4.E || node.lastDirCount != 3)
+                && node.lastDir != Compass4.W && i-- == 0) {
+            return new NodeDistancePair<>(node.move(Compass4.E), this.map[y][x + 1]);
         }
-        if (y != this.map.length - 1 && (node.lastDir != Compass.S || node.lastDirCount != 3)
-                && node.lastDir != Compass.N && i-- == 0) {
-            return new NodeDistancePair<>(node.move(Compass.S), this.map[y + 1][x]);
+        if (y != this.map.length - 1 && (node.lastDir != Compass4.S || node.lastDirCount != 3)
+                && node.lastDir != Compass4.N && i-- == 0) {
+            return new NodeDistancePair<>(node.move(Compass4.S), this.map[y + 1][x]);
         }
-        if (x != 0 && (node.lastDir != Compass.E || node.lastDirCount != 3) && node.lastDir != Compass.W && i-- == 0) {
-            return new NodeDistancePair<>(node.move(Compass.W), this.map[y][x - 1]);
+        if (x != 0 && (node.lastDir != Compass4.E || node.lastDirCount != 3) && node.lastDir != Compass4.W
+                && i-- == 0) {
+            return new NodeDistancePair<>(node.move(Compass4.W), this.map[y][x - 1]);
         }
         return null;
     }
@@ -61,30 +63,34 @@ public class Day17 extends DayBase {
         if (3 <= i) {
             return null;
         }
-        if (node.lastDir != Compass.S && (node.lastDir == null || (node.lastDir != Compass.N && 4 <= node.lastDirCount)
-                || (node.lastDir == Compass.N && node.lastDirCount < 10))) {
-            Node north = node.move(Compass.N);
+        if (node.lastDir != Compass4.S
+                && (node.lastDir == null || (node.lastDir != Compass4.N && 4 <= node.lastDirCount)
+                        || (node.lastDir == Compass4.N && node.lastDirCount < 10))) {
+            Node north = node.move(Compass4.N);
             if (this.isInside(north.pos) && i-- == 0) {
                 return new NodeDistancePair<>(north, this.get(north));
             }
         }
-        if (node.lastDir != Compass.W && (node.lastDir == null || (node.lastDir != Compass.E && 4 <= node.lastDirCount)
-                || (node.lastDir == Compass.E && node.lastDirCount < 10))) {
-            Node east = node.move(Compass.E);
+        if (node.lastDir != Compass4.W
+                && (node.lastDir == null || (node.lastDir != Compass4.E && 4 <= node.lastDirCount)
+                        || (node.lastDir == Compass4.E && node.lastDirCount < 10))) {
+            Node east = node.move(Compass4.E);
             if (this.isInside(east.pos) && i-- == 0) {
                 return new NodeDistancePair<>(east, this.get(east));
             }
         }
-        if (node.lastDir != Compass.N && (node.lastDir == null || (node.lastDir != Compass.S && 4 <= node.lastDirCount)
-                || (node.lastDir == Compass.S && node.lastDirCount < 10))) {
-            Node south = node.move(Compass.S);
+        if (node.lastDir != Compass4.N
+                && (node.lastDir == null || (node.lastDir != Compass4.S && 4 <= node.lastDirCount)
+                        || (node.lastDir == Compass4.S && node.lastDirCount < 10))) {
+            Node south = node.move(Compass4.S);
             if (this.isInside(south.pos) && i-- == 0) {
                 return new NodeDistancePair<>(south, this.get(south));
             }
         }
-        if (node.lastDir != Compass.E && (node.lastDir == null || (node.lastDir != Compass.W && 4 <= node.lastDirCount)
-                || (node.lastDir == Compass.W && node.lastDirCount < 10))) {
-            Node west = node.move(Compass.W);
+        if (node.lastDir != Compass4.E
+                && (node.lastDir == null || (node.lastDir != Compass4.W && 4 <= node.lastDirCount)
+                        || (node.lastDir == Compass4.W && node.lastDirCount < 10))) {
+            Node west = node.move(Compass4.W);
             if (this.isInside(west.pos) && i-- == 0) {
                 return new NodeDistancePair<>(west, this.get(west));
             }
@@ -96,7 +102,7 @@ public class Day17 extends DayBase {
         return node.pos.manhattanDistanceTo(new Vec2i(this.map[this.map.length - 1].length - 1, this.map.length - 1));
     }
 
-    private int execute(BasicGraph<Node> graph, Function<Node, Boolean> isFinal) {
+    private int execute(BasicGraph<Node> graph, Predicate<Node> isFinal) {
         NodeDistancePair<Node> result = AStar.run(graph, new Node(new Vec2i(0, 0), null, 0),
                 new HashedAStarDataStructure<Node>(this::estimate, isFinal));
         return result == null ? 0 : result.distance();
