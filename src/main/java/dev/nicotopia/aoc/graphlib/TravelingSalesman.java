@@ -18,7 +18,7 @@ public class TravelingSalesman {
      * @return The length of the shortest path or round-trip visiting all nodes
      *         exactly once
      */
-    public static int run(int weights[][], OptionalInt start) {
+    public static long run(long weights[][], OptionalInt start) {
         int nodeCount = weights.length;
         int visitedMask = (1 << nodeCount) - 1;
         Function<Integer, Integer> getCurrentNode = state -> state >> nodeCount;
@@ -39,9 +39,9 @@ public class TravelingSalesman {
         return dijkstraInterface.getDistanceMap().keySet().stream()
                 .filter(state -> (state & visitedMask) == visitedMask
                         && (start.isPresent() || weights[getCurrentNode.apply(state)][0] != Integer.MAX_VALUE))
-                .mapToInt(state -> dijkstraInterface.getDistanceMap().get(state)
+                .mapToLong(state -> dijkstraInterface.getDistanceMap().get(state)
                         + (start.isEmpty() ? weights[getCurrentNode.apply(state)][0] : 0))
-                .min().getAsInt();
+                .min().getAsLong();
     }
 
     /**
@@ -57,10 +57,11 @@ public class TravelingSalesman {
      * @return The length of the shortest path or round-trip visiting all nodes
      *         exactly once
      */
-    public static <NodeType> int run(Collection<NodeType> nodes, BiFunction<NodeType, NodeType, Integer> weightProvider,
+    public static <NodeType> long run(Collection<NodeType> nodes,
+            BiFunction<NodeType, NodeType, Integer> weightProvider,
             Optional<NodeType> start) {
         List<NodeType> linearNodes = nodes.stream().distinct().toList();
-        int weights[][] = new int[linearNodes.size()][linearNodes.size()];
+        long weights[][] = new long[linearNodes.size()][linearNodes.size()];
         for (int i = 0; i < weights.length; ++i) {
             for (int j = 0; j < weights[i].length; ++j) {
                 weights[i][j] = Optional.ofNullable(weightProvider.apply(linearNodes.get(i), linearNodes.get(j)))
@@ -78,7 +79,7 @@ public class TravelingSalesman {
      *                weight from node {@code i} to {@code j}.
      * @return The length of the shortest round-trip visiting all nodes exactly once
      */
-    public static int run(int weights[][]) {
+    public static long run(long weights[][]) {
         return run(weights, OptionalInt.empty());
     }
 
@@ -92,7 +93,7 @@ public class TravelingSalesman {
      *                       {@code null} are interpreted as no edge.
      * @return The length of the shortest round-trip visiting all nodes exactly once
      */
-    public static <NodeType> int run(Collection<NodeType> nodes,
+    public static <NodeType> long run(Collection<NodeType> nodes,
             BiFunction<NodeType, NodeType, Integer> weightProvider) {
         return run(nodes, weightProvider, Optional.empty());
     }

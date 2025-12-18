@@ -3,7 +3,7 @@ package dev.nicotopia.aoc.graphlib;
 import java.util.PriorityQueue;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.ObjIntConsumer;
+import java.util.function.ObjLongConsumer;
 
 public class Dijkstra {
     /**
@@ -33,28 +33,28 @@ public class Dijkstra {
      * 
      * @param <NodeType>      The type of the abstract graph's nodes.
      * @param distanceGetter  {@link DijkstraDataStructure#getDistance(Object)}
-     * @param distanceSetter  {@link DijkstraDataStructure#setDistance(Object, int)}
+     * @param distanceSetter  {@link DijkstraDataStructure#setDistance(Object, long)}
      * @param resetter        {@link BasicGraphInterface#reset()}
      * @param neighbourGetter {@link BasicGraphInterface#getNeighbour(Object, int)}
      * @param start           The start node from which the minimum distances to all
      *                        other nodes will be calculated.
      */
-    public static <NodeType> void run(Function<NodeType, Integer> distanceGetter,
-            ObjIntConsumer<NodeType> distanceSetter, Runnable resetter,
+    public static <NodeType> void run(Function<NodeType, Long> distanceGetter,
+            ObjLongConsumer<NodeType> distanceSetter, Runnable resetter,
             BiFunction<NodeType, Integer, NodeDistancePair<NodeType>> neighbourGetter, NodeType start) {
         resetter.run();
         PriorityQueue<NodeType> visited = new PriorityQueue<>(
-                (l, r) -> Integer.compare(distanceGetter.apply(l), distanceGetter.apply(r)));
+                (l, r) -> Long.compare(distanceGetter.apply(l), distanceGetter.apply(r)));
         distanceSetter.accept(start, 0);
         visited.offer(start);
         while (!visited.isEmpty()) {
             NodeType c = visited.poll();
-            int d = distanceGetter.apply(c);
+            long d = distanceGetter.apply(c);
             int idx = 0;
             NodeDistancePair<NodeType> neighbour;
             while ((neighbour = neighbourGetter.apply(c, idx)) != null) {
-                Integer oldDistance = distanceGetter.apply(neighbour.node());
-                int newDistance = d + neighbour.distance();
+                Long oldDistance = distanceGetter.apply(neighbour.node());
+                long newDistance = d + neighbour.distance();
                 if (oldDistance == null || newDistance < oldDistance) {
                     if (oldDistance != null && oldDistance != Integer.MAX_VALUE) {
                         visited.remove(neighbour.node());

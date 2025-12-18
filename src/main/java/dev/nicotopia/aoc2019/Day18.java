@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.OptionalInt;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.OptionalLong;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import dev.nicotopia.aoc.AocException;
@@ -31,7 +31,7 @@ public class Day18 extends DayBase {
         private final Vec2i entrance;
         private final Map<Vec2i, Character> keys = new HashMap<>();
         private final Map<Vec2i, Character> doors = new HashMap<>();
-        private final Map<State, Map<Character, Integer>> shortestDistancesPerState = new HashMap<>();
+        private final Map<State, Map<Character, Long>> shortestDistancesPerState = new HashMap<>();
 
         public Vault(char[][] layout) {
             this.layout = new char[layout.length][];
@@ -72,13 +72,13 @@ public class Day18 extends DayBase {
                     && (door == null || state.keys.contains(Character.toLowerCase(door)));
         }
 
-        private Map<Character, Integer> getShortestPathToKeys(State state) {
-            Map<Character, Integer> result = this.shortestDistancesPerState.get(state);
+        private Map<Character, Long> getShortestPathToKeys(State state) {
+            Map<Character, Long> result = this.shortestDistancesPerState.get(state);
             if (result != null) {
                 return result;
             }
-            int distances[][] = IntStream.range(0, this.layout.length).mapToObj(i -> new int[this.layout[i].length])
-                    .toArray(int[][]::new);
+            long distances[][] = IntStream.range(0, this.layout.length).mapToObj(i -> new long[this.layout[i].length])
+                    .toArray(long[][]::new);
             Dijkstra.run(p -> distances[p.y()][p.x()], (p, d) -> distances[p.y()][p.x()] = d,
                     () -> Arrays.stream(distances).forEach(r -> Arrays.fill(r, Integer.MAX_VALUE)), (p, i) -> {
                         if (this.isPassable(new Vec2i(p.x(), p.y() - 1), state) && i-- == 0) {
@@ -122,7 +122,7 @@ public class Day18 extends DayBase {
         private final Vault vault;
         private final Vec2i pos;
         private final Set<Character> keys = new HashSet<>();
-        private final Map<Character, Integer> distances;
+        private final Map<Character, Long> distances;
 
         public State(Vault vault) {
             this.vault = vault;
@@ -146,17 +146,17 @@ public class Day18 extends DayBase {
             return this.keys.contains(key);
         }
 
-        public OptionalInt getDistanceTo(char key) {
-            Integer d = this.distances.get(key);
-            return d == null ? OptionalInt.empty() : OptionalInt.of(d);
+        public OptionalLong getDistanceTo(char key) {
+            Long d = this.distances.get(key);
+            return d == null ? OptionalLong.empty() : OptionalLong.of(d);
         }
 
         public boolean isFinal() {
             return this.keys.containsAll(this.vault.keys.values());
         }
 
-        public int estimate() {
-            return this.distances.values().stream().mapToInt(Integer::valueOf).max().orElse(0);
+        public long estimate() {
+            return this.distances.values().stream().mapToLong(Long::valueOf).max().orElse(0);
         }
 
         public NodeDistancePair<State> getNeighbour(int index) {
@@ -165,9 +165,9 @@ public class Day18 extends DayBase {
 
         public NodeDistancePair<State> getNeighbour(IntRef index) {
             for (char key : this.vault.keys.values()) {
-                OptionalInt d = this.getDistanceTo(key);
+                OptionalLong d = this.getDistanceTo(key);
                 if (d.isPresent() && index.value-- == 0) {
-                    return new NodeDistancePair<>(new State(this, key), d.getAsInt());
+                    return new NodeDistancePair<>(new State(this, key), d.getAsLong());
                 }
             }
             return null;
@@ -184,7 +184,7 @@ public class Day18 extends DayBase {
         }
     }
 
-    private int partOne(Vault vault) {
+    private long partOne(Vault vault) {
         return AStar.run(State::getNeighbour, new State(vault),
                 new HashedAStarDataStructure<>(State::estimate, State::isFinal)).distance();
     }
@@ -239,8 +239,8 @@ public class Day18 extends DayBase {
                     && this.states[3].isFinal();
         }
 
-        public int estimate() {
-            int sum = 0;
+        public long estimate() {
+            long sum = 0;
             for (int i = 0; i < 4; ++i) {
                 sum += this.states[i].estimate();
             }
@@ -282,7 +282,7 @@ public class Day18 extends DayBase {
         }
     }
 
-    private int partTwo(char[][] vaultLayout) {
+    private long partTwo(char[][] vaultLayout) {
         return AStar.run(StateP2::getNeighbour, new StateP2(vaultLayout),
                 new HashedAStarDataStructure<>(StateP2::estimate, StateP2::isFinal)).distance();
     }

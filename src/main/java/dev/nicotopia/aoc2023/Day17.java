@@ -98,11 +98,11 @@ public class Day17 extends DayBase {
         return null;
     }
 
-    private int estimate(Node node) {
+    private long estimate(Node node) {
         return node.pos.manhattanDistanceTo(new Vec2i(this.map[this.map.length - 1].length - 1, this.map.length - 1));
     }
 
-    private int execute(BasicGraph<Node> graph, Predicate<Node> isFinal) {
+    private long execute(BasicGraph<Node> graph, Predicate<Node> isFinal) {
         NodeDistancePair<Node> result = AStar.run(graph, new Node(new Vec2i(0, 0), null, 0),
                 new HashedAStarDataStructure<Node>(this::estimate, isFinal));
         return result == null ? 0 : result.distance();

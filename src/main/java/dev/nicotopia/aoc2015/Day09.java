@@ -29,16 +29,16 @@ public class Day09 {
                 List<String> nodes = edges.keySet().stream()
                                 .mapMulti((Set<String> s, Consumer<String> m) -> s.forEach(m))
                                 .distinct().toList();
-                int shortestRoute = nodes.stream()
-                                .mapToInt(n -> TravelingSalesman.run(nodes,
+                long shortestRoute = nodes.stream()
+                                .mapToLong(n -> TravelingSalesman.run(nodes,
                                                 (a, b) -> edges.get(new HashSet<>(Arrays.asList(a, b))),
                                                 Optional.of(n)))
-                                .min().getAsInt();
-                int longestRoute = -nodes.stream()
-                                .mapToInt(n -> TravelingSalesman.run(nodes, (a, b) -> Optional
+                                .min().getAsLong();
+                long longestRoute = -nodes.stream()
+                                .mapToLong(n -> TravelingSalesman.run(nodes, (a, b) -> Optional
                                                 .ofNullable(edges.get(new HashSet<>(Arrays.asList(a, b)))).map(i -> -i)
                                                 .orElse(null), Optional.of(n)))
-                                .min().getAsInt();
+                                .min().getAsLong();
                 System.out.printf("Part one: %d\nPart two: %d\n", shortestRoute, longestRoute);
         }
 }

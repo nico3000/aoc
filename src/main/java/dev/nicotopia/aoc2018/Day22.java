@@ -101,9 +101,10 @@ public class Day22 extends DayBase {
                 .mapToInt(p -> this.getErosionLevel(p) % 3).sum();
     }
 
-    private int partTwo() {
+    private long partTwo() {
         CaveNode start = new CaveNode(new Vec2i(0, 0), Equipment.TORCH);
-        AStarDataStructure<CaveNode> asds = new HashedAStarDataStructure<>(n -> n.pos.manhattanDistanceTo(this.target),
+        AStarDataStructure<CaveNode> asds = new HashedAStarDataStructure<>(
+                n -> (long) n.pos.manhattanDistanceTo(this.target),
                 t -> t.pos.equals(this.target) && t.equipped == Equipment.TORCH);
         NodeDistancePair<CaveNode> result = AStar.run(this::getNeighbour, start, asds);
         return result.node().equipped != Equipment.TORCH ? result.distance() + 7 : result.distance();

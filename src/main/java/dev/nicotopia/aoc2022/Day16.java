@@ -79,14 +79,14 @@ public class Day16 {
         BasicGraph<Valve> graph = (v, i) -> i < v.connectedValves.size()
                 ? new NodeDistancePair<>(v.connectedValves.get(i), v.connectedValvesDistances.get(i))
                 : null;
-        Map<Valve, Map<Valve, Integer>> shortestPaths = new HashMap<>();
+        Map<Valve, Map<Valve, Long>> shortestPaths = new HashMap<>();
         for (Valve v : valves) {
             Dijkstra.run(graph, v, dds);
             shortestPaths.put(v, new HashMap<>(dds.getDistanceMap()));
         }
         Valve start = valveConnections.keySet().stream().filter(v -> v.name.equals("AA")).findAny().get();
         long now = System.currentTimeMillis();
-        int max = findMaxReleasableSteam(shortestPaths, start, 30);
+        long max = findMaxReleasableSteam(shortestPaths, start, 30);
         System.out.printf("Part one: %d, time: %.2fs\n", max, 1e-3f * (float) (System.currentTimeMillis() - now));
         now = System.currentTimeMillis();
         players[0] = new Player(start, 26);
@@ -95,8 +95,8 @@ public class Day16 {
         System.out.printf("Part two: %d, time: %.2fs\n", max, 1e-3f * (float) (System.currentTimeMillis() - now));
     }
 
-    private static int findMaxReleasableSteam(Map<Valve, Map<Valve, Integer>> shortestPaths, Valve currentValve,
-            int remainingTime) {
+    private static long findMaxReleasableSteam(Map<Valve, Map<Valve, Long>> shortestPaths, Valve currentValve,
+            long remainingTime) {
         if (remainingTime <= 0) {
             return 0;
         } else {
@@ -115,9 +115,9 @@ public class Day16 {
 
     public static class Player {
         private Valve dest;
-        private int eta;
+        private long eta;
 
-        public Player(Valve dest, int eta) {
+        public Player(Valve dest, long eta) {
             this.dest = dest;
             this.eta = eta;
         }
@@ -125,7 +125,7 @@ public class Day16 {
 
     private static final Player players[] = new Player[2];
 
-    private static int findMaxReleasableSteamWithTwo(Map<Valve, Map<Valve, Integer>> shortestPaths) {
+    private static long findMaxReleasableSteamWithTwo(Map<Valve, Map<Valve, Long>> shortestPaths) {
         int idx = players[0].eta < players[1].eta ? 1 : 0;
         Player player = players[idx];
         if (player.eta <= 0) {
@@ -133,7 +133,7 @@ public class Day16 {
         }
         Player other = players[1 - idx];
         Valve current = player.dest;
-        int remainingTime = player.eta;
+        long remainingTime = player.eta;
         current.open = true;
         LongAccumulator accu = new LongAccumulator((a, b) -> Math.max(a, b), 0);
         shortestPaths.getOrDefault(current, Collections.emptyMap()).forEach((v, d) -> {

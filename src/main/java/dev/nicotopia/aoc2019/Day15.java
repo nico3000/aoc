@@ -65,19 +65,19 @@ public class Day15 extends DayBase {
         return dst.first() != Type.WALL;
     }
 
-    private int partOne() {
+    private long partOne() {
         this.map.put(Vec2i.ORIGIN, new Pair<>(Type.START, this.machine.clone()));
-        HashedAStarDataStructure<Vec2i> asds = new HashedAStarDataStructure<>(p -> 0, pos -> false);
+        HashedAStarDataStructure<Vec2i> asds = new HashedAStarDataStructure<>(p -> 0L, pos -> false);
         AStar.run(this::getNeighbour, Vec2i.ORIGIN, asds);
         this.oxygenPos = this.map.entrySet().stream().filter(e -> e.getValue().first() == Type.OXYGEN_SYSTEM).findAny()
                 .get().getKey();
         return asds.getFScore(oxygenPos);
     }
 
-    private int partTwo() {
-        HashedAStarDataStructure<Vec2i> asds = new HashedAStarDataStructure<>(p -> 0, pos -> false);
+    private long partTwo() {
+        HashedAStarDataStructure<Vec2i> asds = new HashedAStarDataStructure<>(p -> 0L, pos -> false);
         AStar.run(this::getNeighbour, this.oxygenPos, asds);
-        return this.map.keySet().stream().mapToInt(p -> asds.getFScore(p)).max().getAsInt();
+        return this.map.keySet().stream().mapToLong(p -> asds.getFScore(p)).max().getAsLong();
     }
 
     @Override

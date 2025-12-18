@@ -7,7 +7,7 @@ public interface DijkstraDataStructure<NodeType> {
      * @param node The node
      * @return The distance
      */
-    public Integer getDistance(NodeType node);
+    public Long getDistance(NodeType node);
 
     /**
      * Applies a tentative distance to a given node. When the algorithm finishes the
@@ -16,7 +16,7 @@ public interface DijkstraDataStructure<NodeType> {
      * @param node     The node The node
      * @param distance The distance The new distance
      */
-    public void setDistance(NodeType node, int distance);
+    public void setDistance(NodeType node, long distance);
 
     /**
     * Apply an infinite distance to all nodes.

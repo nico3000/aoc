@@ -29,7 +29,7 @@ public class AStar {
             AStarDataStructure<NodeType> asds) {
         asds.reset();
         PriorityQueue<NodeType> visited = new PriorityQueue<>(
-                (l, r) -> Integer.compare(asds.getFScore(l), asds.getFScore(r)));
+                (l, r) -> Long.compare(asds.getFScore(l), asds.getFScore(r)));
         asds.setFScore(start, asds.estimate(start));
         asds.setGScore(start, 0);
         visited.offer(start);
@@ -41,7 +41,7 @@ public class AStar {
             int idx = 0;
             NodeDistancePair<NodeType> neighbour;
             while ((neighbour = graph.getNeighbour(c, idx)) != null) {
-                int tentativeGScore = asds.getGScore(c) + neighbour.distance();
+                long tentativeGScore = asds.getGScore(c) + neighbour.distance();
                 if (tentativeGScore < asds.getGScore(neighbour.node())) {
                     asds.setGScore(neighbour.node(), tentativeGScore);
                     asds.setFScore(neighbour.node(),

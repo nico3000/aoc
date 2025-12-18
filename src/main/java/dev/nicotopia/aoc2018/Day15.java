@@ -64,7 +64,7 @@ public class Day15 extends DayBase {
         return AStar.run((p, i) -> {
             Vec2i n = this.getNeighbour(p, i, t -> t == Type.FLOOR);
             return n == null ? null : new NodeDistancePair<Vec2i>(n, 1);
-        }, from, new HashedAStarDataStructure<Vec2i>(to::manhattanDistanceTo, to::equals));
+        }, from, new HashedAStarDataStructure<Vec2i>(o -> (long) to.manhattanDistanceTo(o), to::equals));
     }
 
     private Vec2i getNeighbour(Vec2i p, int i, Predicate<Type> accept) {
@@ -99,7 +99,7 @@ public class Day15 extends DayBase {
 
     private int nearest(NodeDistancePair<Vec2i> a, NodeDistancePair<Vec2i> b) {
         return a.distance() == b.distance() ? this.readingOrder(a.node(), b.node())
-                : Integer.compare(a.distance(), b.distance());
+                : Long.compare(a.distance(), b.distance());
     }
 
     private int readingOrder(Vec2i a, Vec2i b) {

@@ -38,7 +38,7 @@ public class Day20 extends DayBase {
     }
 
     private class Labyrinth {
-        private final Map<Portal, Map<Portal, Integer>> portals = new HashMap<>();
+        private final Map<Portal, Map<Portal, Long>> portals = new HashMap<>();
 
         public void addPortal(String label, Vec2i pos, PortalType type) {
             this.portals.put(new Portal(label, pos, type), new HashMap<>());
@@ -107,13 +107,13 @@ public class Day20 extends DayBase {
     private record PartOneGraph(Labyrinth labyrinth) implements BasicGraph<Portal> {
         @Override
         public NodeDistancePair<Portal> getNeighbour(Portal node, int index) {
-            Map<Portal, Integer> neighbours = this.labyrinth.portals.get(node);
+            Map<Portal, Long> neighbours = this.labyrinth.portals.get(node);
             Iterator<Portal> iter = neighbours.keySet().iterator();
             while (iter.hasNext()) {
                 Portal src = iter.next();
                 if (index-- == 0) {
                     Optional<Portal> dst = labyrinth.getPortalDestination(src);
-                    int dist = neighbours.get(src);
+                    long dist = neighbours.get(src);
                     return dst.isPresent() ? new NodeDistancePair<>(dst.get(), dist + 1)
                             : new NodeDistancePair<>(src, dist);
                 }
@@ -137,7 +137,7 @@ public class Day20 extends DayBase {
             var destinations = labyrinth.portals.get(node.portal());
             for (var entry : destinations.entrySet()) {
                 Portal nextPortal = entry.getKey();
-                int nextDistance = entry.getValue();
+                long nextDistance = entry.getValue();
                 if (node.depth() == 0 && nextPortal.type() == PortalType.END && index-- == 0) {
                     return new NodeDistancePair<>(new DepthPortal(nextPortal, 0), nextDistance);
                 } else if ((nextPortal.type() == PortalType.INNER
@@ -155,15 +155,15 @@ public class Day20 extends DayBase {
         }
     }
 
-    private int partOne(Labyrinth l) {
+    private long partOne(Labyrinth l) {
         HashedDijkstraDataStructure<Portal> dds = new HashedDijkstraDataStructure<>();
         Dijkstra.run(new PartOneGraph(l), l.getStart(), dds);
         return dds.getDistance(l.getEnd());
     }
 
-    private int partTwo(Labyrinth l) {
+    private long partTwo(Labyrinth l) {
         return AStar.run(new PartTwoGraph(l), new DepthPortal(l.getStart(), 0),
-                new HashedAStarDataStructure<>(dp -> 0, DepthPortal::isEnd)).distance();
+                new HashedAStarDataStructure<>(dp -> 0L, DepthPortal::isEnd)).distance();
     }
 
     @Override

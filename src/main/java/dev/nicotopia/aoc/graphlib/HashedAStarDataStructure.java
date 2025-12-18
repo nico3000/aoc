@@ -8,12 +8,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class HashedAStarDataStructure<NodeType> implements AStarDataStructure<NodeType> {
-    private final Map<NodeType, Integer> fScores = new HashMap<>();
-    private final Map<NodeType, Integer> gScores = new HashMap<>();
-    private final Function<NodeType, Integer> estimator;
+    private final Map<NodeType, Long> fScores = new HashMap<>();
+    private final Map<NodeType, Long> gScores = new HashMap<>();
+    private final Function<NodeType, Long> estimator;
     private final Predicate<NodeType> isFinal;
 
-    public HashedAStarDataStructure(Function<NodeType, Integer> estimator, Predicate<NodeType> isFinal) {
+    public HashedAStarDataStructure(Function<NodeType, Long> estimator, Predicate<NodeType> isFinal) {
         this.estimator = estimator;
         this.isFinal = isFinal;
     }
@@ -25,28 +25,28 @@ public class HashedAStarDataStructure<NodeType> implements AStarDataStructure<No
     }
 
     @Override
-    public void setFScore(NodeType node, int score) {
+    public void setFScore(NodeType node, long score) {
         this.fScores.put(node, score);
     }
 
     @Override
-    public int getFScore(NodeType node) {
+    public long getFScore(NodeType node) {
         return Optional.ofNullable(this.fScores.get(node)).orElseGet(() -> this.estimate(node));
     }
 
     @Override
-    public void setGScore(NodeType node, int score) {
+    public void setGScore(NodeType node, long score) {
         this.gScores.put(node, score);
 
     }
 
     @Override
-    public int getGScore(NodeType node) {
-        return this.gScores.getOrDefault(node, Integer.MAX_VALUE);
+    public long getGScore(NodeType node) {
+        return this.gScores.getOrDefault(node, Long.MAX_VALUE);
     }
 
     @Override
-    public int estimate(NodeType node) {
+    public long estimate(NodeType node) {
         return this.estimator.apply(node);
     }
 
@@ -55,7 +55,7 @@ public class HashedAStarDataStructure<NodeType> implements AStarDataStructure<No
         return this.isFinal.test(node);
     }
 
-    public Map<NodeType, Integer> getFScores() {
+    public Map<NodeType, Long> getFScores() {
         return Collections.unmodifiableMap(this.fScores);
     }
 }

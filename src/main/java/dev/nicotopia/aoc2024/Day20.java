@@ -2,7 +2,7 @@ package dev.nicotopia.aoc2024;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import dev.nicotopia.Pair;
 import dev.nicotopia.aoc.CharMap2D;
@@ -13,7 +13,7 @@ public class Day20 extends DayBase {
     private CharMap2D map;
     private Vec2i start;
     private Vec2i end;
-    private final Map<Pair<Vec2i, Vec2i>, OptionalInt> distances = new HashMap<>();
+    private final Map<Pair<Vec2i, Vec2i>, OptionalLong> distances = new HashMap<>();
 
     private void preprocess() {
         this.map = this.getPrimaryPuzzleInputAsCharMap2D();
@@ -21,7 +21,7 @@ public class Day20 extends DayBase {
         this.end = this.map.findAnyPositionOf('E').get();
         this.map.set(this.start, '.');
         this.map.set(this.end, '.');
-        OptionalInt d[][] = this.map.getShortestDistances(this.start, '.');
+        OptionalLong d[][] = this.map.getShortestDistances(this.start, '.');
         this.map.coordinates((p, c) -> c == '.').forEach(p -> {
             this.distances.put(new Pair<>(p, this.end), this.map.getShortestDistance(p, this.end, '.'));
             this.distances.put(new Pair<>(this.start, p), d[p.y()][p.x()]);
@@ -29,17 +29,17 @@ public class Day20 extends DayBase {
     }
 
     private long getNumEffectiveCheats(int cheatDuration, int minSaving) {
-        int baseDistance = this.distances.get(new Pair<>(this.start, this.end)).getAsInt();
+        long baseDistance = this.distances.get(new Pair<>(this.start, this.end)).getAsLong();
         return this.map.coordinates((p, c) -> c == '.').mapToLong(p -> {
             long count = 0;
-            OptionalInt toHere = this.distances.get(new Pair<>(this.start, p));
+            OptionalLong toHere = this.distances.get(new Pair<>(this.start, p));
             if (toHere.isPresent()) {
                 count += p.manhattanSphere(cheatDuration).filter(cheatEnd -> this.map.is(cheatEnd, '.'))
                         .filter(cheatEnd -> {
-                            OptionalInt fromCheatEnd = this.distances.get(new Pair<>(cheatEnd, this.end));
+                            OptionalLong fromCheatEnd = this.distances.get(new Pair<>(cheatEnd, this.end));
                             if (fromCheatEnd.isPresent()) {
                                 int cheatDistance = p.manhattanDistanceTo(cheatEnd);
-                                int totalDistance = toHere.getAsInt() + cheatDistance + fromCheatEnd.getAsInt();
+                                long totalDistance = toHere.getAsLong() + cheatDistance + fromCheatEnd.getAsLong();
                                 if (minSaving <= baseDistance - totalDistance) {
                                     return true;
                                 }

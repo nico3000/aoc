@@ -1,4 +1,4 @@
 package dev.nicotopia.aoc.graphlib;
 
-public record NodeDistancePair<NodeType>(NodeType node, int distance) {
+public record NodeDistancePair<NodeType>(NodeType node, long distance) {
 }

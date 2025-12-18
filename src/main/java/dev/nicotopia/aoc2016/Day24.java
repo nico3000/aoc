@@ -38,7 +38,7 @@ public class Day24 {
             lines = br.lines().toList();
         }
         int width = lines.stream().mapToInt(String::length).findAny().getAsInt();
-        int arena[][] = new int[lines.size()][width];
+        long arena[][] = new long[lines.size()][width];
         List<LabeledPosition> toVisit = new LinkedList<>();
         for (int y = 0; y < arena.length; ++y) {
             for (int x = 0; x < arena[y].length; ++x) {
@@ -50,7 +50,7 @@ public class Day24 {
                 }
             }
         }
-        int shortestDistances[][] = new int[toVisit.size()][toVisit.size()];
+        long shortestDistances[][] = new long[toVisit.size()][toVisit.size()];
         BiFunction<Position, Integer, NodeDistancePair<Position>> neighbourGetter = (n, i) -> {
             Position p = n.getNeighbour(i);
             return p == null ? null : new NodeDistancePair<>(p, 1);
@@ -67,7 +67,7 @@ public class Day24 {
         System.out.println("Part two: " + TravelingSalesman.run(shortestDistances));
     }
 
-    private static void reset(int arena[][]) {
+    private static void reset(long arena[][]) {
         for (int y = 0; y < arena.length; ++y) {
             for (int x = 0; x < arena[y].length; ++x) {
                 if (arena[y][x] != -1) {

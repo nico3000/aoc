@@ -62,11 +62,11 @@ public class Day20 extends DayBase {
     }
 
     private int partOne() {
-        return this.dds.getDistanceMap().values().stream().mapToInt(i -> i).max().getAsInt();
+        return this.dds.getDistanceMap().values().stream().mapToInt(Long::intValue).max().getAsInt();
     }
 
     private long partTwo() {
-        return this.dds.getDistanceMap().values().stream().mapToInt(i -> i).filter(i -> 1000 <= i).count();
+        return this.dds.getDistanceMap().values().stream().mapToInt(Long::intValue).filter(i -> 1000 <= i).count();
     }
 
     @Override

@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class HashedDijkstraDataStructure<NodeType> implements DijkstraDataStructure<NodeType> {
-    private final Map<NodeType, Integer> distances = new HashMap<>();
+    private final Map<NodeType, Long> distances = new HashMap<>();
 
     @Override
-    public Integer getDistance(NodeType node) {
+    public Long getDistance(NodeType node) {
         return this.distances.get(node);
     }
 
     @Override
-    public void setDistance(NodeType node, int distance) {
+    public void setDistance(NodeType node, long distance) {
         this.distances.put(node, distance);
     }
 
@@ -29,7 +29,7 @@ public class HashedDijkstraDataStructure<NodeType> implements DijkstraDataStruct
      * 
      * @return The shortest distance map
      */
-    public Map<NodeType, Integer> getDistanceMap() {
+    public Map<NodeType, Long> getDistanceMap() {
         return Collections.unmodifiableMap(this.distances);
     }
 

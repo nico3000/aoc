@@ -1,7 +1,7 @@
 package dev.nicotopia.aoc2024;
 
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import dev.nicotopia.aoc.CharMap2D;
 import dev.nicotopia.aoc.DayBase;
@@ -11,15 +11,15 @@ public class Day18 extends DayBase {
     private CharMap2D map;
     private List<Vec2i> blocks;
 
-    private OptionalInt getShortestPathLength(int numBlocks) {
+    private OptionalLong getShortestPathLength(int numBlocks) {
         this.map.fill('.');
         this.blocks.subList(0, numBlocks).forEach(b -> this.map.set(b, '#'));
         return this.map.getShortestDistance(Vec2i.ORIGIN, new Vec2i(this.map.getWidth() - 1, this.map.getHeight() - 1),
                 '.');
     }
 
-    private int partOne() {
-        return this.getShortestPathLength(this.getIntInput("Part one num blocks")).getAsInt();
+    private long partOne() {
+        return this.getShortestPathLength(this.getIntInput("Part one num blocks")).getAsLong();
     }
 
     private Vec2i partTwo() {

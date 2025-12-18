@@ -3,7 +3,7 @@ package dev.nicotopia.aoc2023;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -19,7 +19,7 @@ public class Day21 extends DayBase {
     private char[][] map;
     private Vec2i start;
 
-    private OptionalInt getMinSteps(Vec2i from, Vec2i to) {
+    private OptionalLong getMinSteps(Vec2i from, Vec2i to) {
         NodeDistancePair<Vec2i> result = AStar.run((p, i) -> {
             if (4 <= i) {
                 return null;
@@ -33,8 +33,8 @@ public class Day21 extends DayBase {
                 return new NodeDistancePair<Vec2i>(new Vec2i(p.x() - 1, p.y()), 1);
             }
             return null;
-        }, from, new HashedAStarDataStructure<Vec2i>(to::manhattanDistanceTo, to::equals));
-        OptionalInt r = result == null ? OptionalInt.empty() : OptionalInt.of(result.distance());
+        }, from, new HashedAStarDataStructure<Vec2i>(o -> (long) to.manhattanDistanceTo(o), to::equals));
+        OptionalLong r = result == null ? OptionalLong.empty() : OptionalLong.of(result.distance());
         return r;
     }
 
@@ -49,12 +49,12 @@ public class Day21 extends DayBase {
         this.map[this.start.y()][this.start.x()] = '.';
     }
 
-    private Map<Vec2i, Integer> getMinStepsToAll(Vec2i from) {
+    private Map<Vec2i, Long> getMinStepsToAll(Vec2i from) {
         return Vec2i.streamFromRectangle(0, 0, this.map.length, this.map.length).parallel()
                 .filter(p -> this.map[p.y()][p.x()] == '.')
                 .collect(Collectors.toMap(p -> p, p -> this.getMinSteps(from, p))).entrySet().stream()
                 .filter(e -> e.getValue().isPresent())
-                .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getAsInt()));
+                .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getAsLong()));
     }
 
     private int partOne() {
@@ -95,7 +95,7 @@ public class Day21 extends DayBase {
 
     private long getNumReachablesInQuadrant(Vec2i base, int numSteps) {
         Vec2i startSectionCorner = new Vec2i(this.map.length - 1 - base.x(), this.map.length - 1 - base.y());
-        int numStepsStartToBase = this.getMinSteps(this.start, startSectionCorner).getAsInt() + 2;
+        long numStepsStartToBase = this.getMinSteps(this.start, startSectionCorner).getAsLong() + 2;
         return this.getNumReachables(base, numStepsStartToBase, numSteps - numStepsStartToBase, true);
     }
 
@@ -104,17 +104,17 @@ public class Day21 extends DayBase {
         return this.getNumReachables(base, numStepsStartToBase, numSteps - numStepsStartToBase, false);
     }
 
-    private long getNumReachables(Vec2i base, int numStepsStartToBase, int numRemSteps, boolean quadrant) {
+    private long getNumReachables(Vec2i base, long numStepsStartToBase, long numRemSteps, boolean quadrant) {
         if (numRemSteps < 0) {
             return 0;
         }
         Predicate<Vec2i> isEven = p -> (p.x() + p.y()) % 2 == (base.x() + base.y()) % 2;
-        Map<Vec2i, Integer> minStepsBaseToAll = this.getMinStepsToAll(base);
+        Map<Vec2i, Long> minStepsBaseToAll = this.getMinStepsToAll(base);
 
-        int minStepsForAllEven = minStepsBaseToAll.entrySet().stream().filter(e -> isEven.test(e.getKey()))
-                .mapToInt(e -> e.getValue()).max().getAsInt();
-        int minStepsForAllOdd = minStepsBaseToAll.entrySet().stream().filter(e -> !isEven.test(e.getKey()))
-                .mapToInt(e -> e.getValue()).max().getAsInt();
+        long minStepsForAllEven = minStepsBaseToAll.entrySet().stream().filter(e -> isEven.test(e.getKey()))
+                .mapToLong(e -> e.getValue()).max().getAsLong();
+        long minStepsForAllOdd = minStepsBaseToAll.entrySet().stream().filter(e -> !isEven.test(e.getKey()))
+                .mapToLong(e -> e.getValue()).max().getAsLong();
         long numEven = minStepsBaseToAll.keySet().stream().filter(isEven).count();
         long numOdd = minStepsBaseToAll.keySet().stream().filter(isEven.negate()).count();
 
@@ -126,7 +126,7 @@ public class Day21 extends DayBase {
             } else if (numRemSteps % 2 == 1 && minStepsForAllOdd <= numRemSteps) {
                 numReachables = numOdd;
             } else {
-                final int n = numRemSteps;
+                final long n = numRemSteps;
                 numReachables = minStepsBaseToAll.entrySet().stream()
                         .filter(e -> isEven.test(e.getKey()) == (n % 2 == 0) && e.getValue() <= n).count();
             }

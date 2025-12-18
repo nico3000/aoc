@@ -63,15 +63,15 @@ public class Day16 extends DayBase {
     private CharMap2D map;
     private final HashedDijkstraDataStructure<CharMap2DNode> dds = new HashedDijkstraDataStructure<>();
 
-    private int partOne() {
+    private long partOne() {
         CharMap2DNode startNode = new CharMap2DNode(this.map.findAnyPositionOf('S').get(), Compass4.E);
         Dijkstra.run(startNode, this.dds);
         Vec2i end = this.map.findAnyPositionOf('E').get();
         return Stream.of(Compass4.values()).map(d -> new CharMap2DNode(end, d)).map(this.dds::getDistance)
-                .mapToInt(Integer::valueOf).min().getAsInt();
+                .mapToLong(Long::valueOf).min().getAsLong();
     }
 
-    private int partTwo(int min) {
+    private int partTwo(long min) {
         Set<Vec2i> pathNodes = new HashSet<>();
         Vec2i end = this.map.findAnyPositionOf('E').get();
         Set<NodeDistancePair<CharMap2DNode>> current = this.dds.nodeDistancePairs(true)
@@ -96,7 +96,7 @@ public class Day16 extends DayBase {
     @Override
     public void run() {
         this.map = this.getPrimaryPuzzleInputAsCharMap2D();
-        int min = this.addTask("Part one", this::partOne);
+        long min = this.addTask("Part one", this::partOne);
         this.addTask("Part two", () -> this.partTwo(min));
     }
 }

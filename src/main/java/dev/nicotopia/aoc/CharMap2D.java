@@ -2,11 +2,11 @@ package dev.nicotopia.aoc;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.ObjIntConsumer;
+import java.util.function.ObjLongConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,21 +91,21 @@ public class CharMap2D {
         }
     }
 
-    public OptionalInt getShortestDistance(Vec2i from, Vec2i to, char accessible) {
+    public OptionalLong getShortestDistance(Vec2i from, Vec2i to, char accessible) {
         return this.getShortestDistances(from, accessible)[to.y()][to.x()];
     }
 
-    public OptionalInt[][] getShortestDistances(Vec2i from, char accessible) {
-        OptionalInt distances[][] = new OptionalInt[this.getHeight()][this.getWidth()];
-        Runnable reset = () -> this.coordinates().forEach(c -> distances[c.y()][c.x()] = OptionalInt.empty());
+    public OptionalLong[][] getShortestDistances(Vec2i from, char accessible) {
+        OptionalLong distances[][] = new OptionalLong[this.getHeight()][this.getWidth()];
+        Runnable reset = () -> this.coordinates().forEach(c -> distances[c.y()][c.x()] = OptionalLong.empty());
         if (!this.is(from, accessible)) {
             reset.run();
             return distances;
         }
-        Function<Vec2i, Integer> distanceGetter = p -> distances[p.y()][p.x()].isPresent()
-                ? distances[p.y()][p.x()].getAsInt()
+        Function<Vec2i, Long> distanceGetter = p -> distances[p.y()][p.x()].isPresent()
+                ? distances[p.y()][p.x()].getAsLong()
                 : null;
-        ObjIntConsumer<Vec2i> distanceSetter = (p, d) -> distances[p.y()][p.x()] = OptionalInt.of(d);
+        ObjLongConsumer<Vec2i> distanceSetter = (p, d) -> distances[p.y()][p.x()] = OptionalLong.of(d);
         Dijkstra.run(distanceGetter, distanceSetter, reset, (p, idx) -> {
             for (Compass4 c : Compass4.values()) {
                 if (this.is(p.getNeighbour(c), accessible) && idx-- == 0) {

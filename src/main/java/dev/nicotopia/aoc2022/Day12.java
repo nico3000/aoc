@@ -52,7 +52,7 @@ public class Day12 {
             for (int x = 0; x < terrain[y].length; ++x) {
                 if (terrain[y][x] == 0) {
                     Dijkstra.run(graph, new Position(x, y), dds);
-                    min = Math.min(min, dds.getDistanceMap().getOrDefault(end, Integer.MAX_VALUE));
+                    min = Math.min(min, dds.getDistanceMap().getOrDefault(end, Long.MAX_VALUE));
                     if (x == start.x && y == start.y) {
                         System.out.println("Part one: " + dds.getDistance(end));
                     }
